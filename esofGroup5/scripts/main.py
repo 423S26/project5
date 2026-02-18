@@ -21,7 +21,7 @@ def load_questions(filepath):
     return renamed
 
 
-questions = load_questions("Test.csv")
+questions = load_questions("test.csv")
 
 for question, options in questions.items():
     print(f"Question: {question}")

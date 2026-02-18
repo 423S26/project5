@@ -1,28 +1,49 @@
+from flask import Flask, jsonify, request
 import csv
 
+app = Flask(__name__)
+
+questions = {}
 
 def load_questions(filepath):
     with open(filepath, newline='') as f:
         reader = csv.reader(f)
-        headers = next(reader)  # QID4, QID5, etc. - we'll skip these
-
-        questions = {header: [] for header in headers}
-
+        headers = next(reader)
+        data = {header: [] for header in headers}
         for row in reader:
             for i, value in enumerate(row):
-                questions[headers[i]].append(value)
+                data[headers[i]].append(value)
 
-    # Rename keys to use the first value (actual question text) as the name
     renamed = {}
-    for key, values in questions.items():
-        question_text = values[0]  # e.g. "Are you 18 or older?"
-        renamed[question_text] = values[1:]  # rest of the list = answer options
-
+    for key, values in data.items():
+        question_text = values[0]
+        renamed[question_text] = {
+            "options": values[1:],
+            "type": None
+        }
     return renamed
 
+@app.route('/upload', methods=['POST'])
+def upload():
+    global questions
+    questions = load_questions("test.csv")
+    return jsonify({"message": "CSV loaded", "questions": list(questions.keys())})
 
-questions = load_questions("test.csv")
+@app.route('/questions', methods=['GET'])
+def get_questions():
+    return jsonify(questions)
 
-for question, options in questions.items():
-    print(f"Question: {question}")
-    print(f"Options: {options}")
+@app.route('/questions/set-type', methods=['POST'])
+def set_type():
+    data = request.json
+    question = data.get("question")
+    q_type = data.get("type")
+
+    if question not in questions:
+        return jsonify({"error": "Question not found"}), 404
+
+    questions[question]["type"] = q_type
+    return jsonify({"message": f"Type set for '{question}'", "question": questions[question]})
+
+if __name__ == '__main__':
+    app.run(debug=True)

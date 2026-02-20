@@ -15,7 +15,7 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
-
+0
 # Accepts a CSV file upload and parses it into questions.
 # The Qualtrics export format has:
 #   Row 1 - internal column IDs (e.g. "QID2") — used as dict keys during parsing

@@ -4,8 +4,49 @@
 
 *A proposed solution to transform Qualtrics survey data into actionable visualizations and statistics.*
 
-> The application is in the planning and design phase (Sprint 0/1). No real functional code has been implemented yet.
-> This README serves as our development roadmap and specification document.
+---
+
+## Running Locally
+
+### Requirements
+- Python 3.9+
+- A modern web browser (Chrome, Firefox, Safari, Edge)
+
+### 1. Set up the virtual environment
+
+From the project root:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate        # macOS/Linux
+# .venv\Scripts\activate         # Windows
+pip install flask
+```
+
+### 2. Start the Flask backend
+
+```bash
+cd esofGroup5/scripts
+python main.py
+```
+
+The server will start on **http://localhost:5001**.
+
+> **macOS note:** Port 5000 is reserved by AirPlay Receiver, so we use 5001. If you see a 403 error, make sure you're hitting port 5001, not 5000.
+
+### 3. Open the frontend
+
+Open `esofGroup5/index.html` directly in your browser (File → Open, or drag it in).
+
+### 4. Upload a CSV
+
+Click **Choose File**, select `esofGroup5/scripts/test.csv` (or any Qualtrics CSV export), then click **Upload File**.
+
+- A dropdown will appear with all survey questions.
+- Select a question to see a preview of its responses.
+- Use the **Question Type** selector to label the question, then click **Save Type**.
+
+---
 
 ## Project Vision
 

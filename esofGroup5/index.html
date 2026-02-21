@@ -4,29 +4,214 @@
     </head>
     <body>
         <h1>ESC Dashboard</h1>
-        
-        
-        <!-- Navigation -->
+
+        <!-- Navigation bar — links to the other pages in the app -->
         <Ul class="navigation">
             <li><a href="index.html">Home</a></li>
             <li><a href="Responses.html">Responses</a></li>
-            
             <li><a href="Analytics.html">Analytics</a></li>
             <li><a href="documentation.html">Documentation</a></li>
-            
         </Ul>
         <br><br><br>
- 
-        <form action="upload.php" method="post" enctype="multipart/form-data" class="csv_form">
+
+        <!-- File upload form.
+             enctype="multipart/form-data" is required for file uploads.
+             No action/method attributes — submission is handled by JS below
+             so the page doesn't navigate away. -->
+        <form id="uploadForm" enctype="multipart/form-data" class="csv_form">
             <label for="fileToUpload">Select file to upload:</label>
             <br>
-            <input type="file" name="fileToUpload" id="fileToUpload">
+            <!-- accept=".csv" restricts the file picker to CSV files only -->
+            <input type="file" name="file" id="fileToUpload" accept=".csv">
             <br>
             <input type="submit" value="Upload File" name="submit">
         </form>
 
-        
-        
-    </body>
+        <!-- Shows upload progress and error messages to the user -->
+        <div id="status"></div>
 
+        <!-- Shown after a successful upload — lets the user pick a question -->
+        <div id="question-selector" style="display:none">
+            <br>
+            <label for="questionSelect"><strong>Select a question:</strong></label>
+            <br>
+            <select id="questionSelect">
+                <option value="">-- Choose a question --</option>
+            </select>
+        </div>
+
+        <!-- Shown after the user selects a question — preview + type assignment -->
+        <div id="question-detail" style="display:none">
+            <br>
+            <h3 id="question-heading"></h3>
+
+            <!-- Sample of real responses pulled from the CSV -->
+            <strong>Response Preview:</strong>
+            <ul id="response-preview"></ul>
+
+            <!-- The user picks what kind of question this is -->
+            <label for="typeSelect">Question Type:</label>
+            <select id="typeSelect">
+                <option value="">-- Select type --</option>
+                <option value="multiple_choice">Multiple Choice</option>
+                <option value="likert">Likert Scale (1-5)</option>
+                <option value="ranking">Ranking</option>
+                <option value="short_answer">Short Answer</option>
+                <option value="yes_no">Yes / No</option>
+                <option value="rating">Rating / Satisfaction</option>
+            </select>
+
+            <button id="saveTypeBtn">Save Type</button>
+
+            <!-- Inline confirmation message after saving -->
+            <span id="saveStatus"></span>
+        </div>
+
+        <script>
+            // Holds the full questions data (including options) after upload.
+            // Keyed by question text, same structure as Flask's /questions response.
+            let questionsData = {};
+
+            // --- UPLOAD HANDLER ---
+            // Intercept the form submit so we can send the file via fetch
+            // instead of doing a full page reload.
+            document.getElementById('uploadForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const fileInput = document.getElementById('fileToUpload');
+
+                // Guard: make sure the user actually picked a file before sending.
+                if (!fileInput.files.length) {
+                    document.getElementById('status').textContent = 'Please select a file.';
+                    return;
+                }
+
+                // FormData is the browser's built-in way to package a file
+                // for a multipart POST — Flask's request.files reads this on the other end.
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                document.getElementById('status').textContent = 'Uploading...';
+
+                // POST the file to Flask, then immediately fetch the full question data.
+                fetch('http://localhost:5001/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('status').textContent = 'Error: ' + data.error;
+                        return;
+                    }
+
+                    document.getElementById('status').textContent = data.message;
+
+                    // After upload, fetch the full questions object (includes response options).
+                    // /upload only returns the question names; /questions returns everything.
+                    return fetch('http://localhost:5001/questions');
+                })
+                .then(res => res.json())
+                .then(data => {
+                    questionsData = data;
+                    populateQuestionDropdown(data);
+                })
+                .catch(() => {
+                    document.getElementById('status').textContent = 'Failed to connect to server. Is the Flask app running?';
+                });
+            });
+
+            // Fills the question <select> with one <option> per question.
+            function populateQuestionDropdown(data) {
+                const select = document.getElementById('questionSelect');
+
+                // Clear any options from a previous upload.
+                select.innerHTML = '<option value="">-- Choose a question --</option>';
+
+                Object.keys(data).forEach(function(q) {
+                    const option = document.createElement('option');
+                    option.value = q;
+                    // Truncate long question text so the dropdown stays readable.
+                    option.textContent = q.length > 80 ? q.substring(0, 80) + '...' : q;
+                    select.appendChild(option);
+                });
+
+                document.getElementById('question-selector').style.display = 'block';
+                document.getElementById('question-detail').style.display = 'none';
+            }
+
+            // --- QUESTION SELECTION HANDLER ---
+            // When the user picks a question, show a preview of its responses
+            // and the type selector.
+            document.getElementById('questionSelect').addEventListener('change', function() {
+                const selected = this.value;
+
+                if (!selected) {
+                    document.getElementById('question-detail').style.display = 'none';
+                    return;
+                }
+
+                const question = questionsData[selected];
+
+                // Show the full question text as a heading.
+                document.getElementById('question-heading').textContent = selected;
+
+                // Show up to 5 non-empty responses as a preview.
+                const previewList = document.getElementById('response-preview');
+                previewList.innerHTML = '';
+
+                const nonEmpty = question.options.filter(r => r.trim() !== '');
+                const preview = nonEmpty.slice(0, 5);
+
+                if (preview.length === 0) {
+                    const li = document.createElement('li');
+                    li.textContent = '(no responses recorded)';
+                    previewList.appendChild(li);
+                } else {
+                    preview.forEach(function(response) {
+                        const li = document.createElement('li');
+                        li.textContent = response;
+                        previewList.appendChild(li);
+                    });
+                }
+
+                // If a type was previously saved for this question, pre-select it.
+                document.getElementById('typeSelect').value = question.type || '';
+                document.getElementById('saveStatus').textContent = '';
+
+                document.getElementById('question-detail').style.display = 'block';
+            });
+
+            // --- SAVE TYPE HANDLER ---
+            // POSTs the selected question + type to Flask's /questions/set-type endpoint.
+            document.getElementById('saveTypeBtn').addEventListener('click', function() {
+                const question = document.getElementById('questionSelect').value;
+                const type = document.getElementById('typeSelect').value;
+
+                if (!type) {
+                    document.getElementById('saveStatus').textContent = ' Please select a type.';
+                    return;
+                }
+
+                fetch('http://localhost:5001/questions/set-type', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question, type: type })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('saveStatus').textContent = ' Error: ' + data.error;
+                        return;
+                    }
+                    // Update local copy so the pre-select works if they revisit this question.
+                    questionsData[question].type = type;
+                    document.getElementById('saveStatus').textContent = ' Saved!';
+                })
+                .catch(() => {
+                    document.getElementById('saveStatus').textContent = ' Failed to save.';
+                });
+            });
+        </script>
+    </body>
 </html>

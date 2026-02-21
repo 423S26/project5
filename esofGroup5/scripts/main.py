@@ -1,21 +1,27 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 import csv
 import io
+import os
 
 app = Flask(__name__)
+
+# Base directory is esofGroup5/ — one level up from this script.
+# Used to locate and serve the frontend HTML and CSS files.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # In-memory store for parsed questions. Populated on /upload, read by /questions.
 questions = {}
 
-# Runs after every response — adds CORS headers so the browser allows
-# requests from a different origin (e.g. an HTML file opened locally).
-@app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    return response
-0
+# Serves the main page. On Render, the user hits the root URL and gets index.html.
+@app.route('/')
+def index():
+    return send_from_directory(BASE_DIR, 'index.html')
+
+# Serves the CSS file. The HTML references /style/style.css so Flask needs to handle it.
+@app.route('/style/<path:filename>')
+def styles(filename):
+    return send_from_directory(os.path.join(BASE_DIR, 'style'), filename)
+
 # Accepts a CSV file upload and parses it into questions.
 # The Qualtrics export format has:
 #   Row 1 - internal column IDs (e.g. "QID2") — used as dict keys during parsing
@@ -88,4 +94,7 @@ def set_type():
     return jsonify({"message": f"Type set for '{question}'", "question": questions[question]})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    # Render injects a PORT environment variable — use it if present, fall back to 5001 locally.
+    # host='0.0.0.0' is required so Render can route external traffic to the server.
+    port = int(os.environ.get('PORT', 5001))
+    app.run(host='0.0.0.0', debug=False, port=port)

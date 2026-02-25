@@ -1,1 +1,2 @@
-Different conflict for feature 2 - whoopsies!
+This file is a conflict! uh oh!
+

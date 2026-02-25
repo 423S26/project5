@@ -1,3 +1,5 @@
+Test commit for assignment
+
 # ESC Dashboard
 
 **Analytics Dashboard for the Empowerment Student Center**

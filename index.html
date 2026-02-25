@@ -1,6 +1,311 @@
 <html>
     <body>
-        <h1>Hello ESOF 423</h1>
+        <h1>ESC Dashboard</h1>
+        
         <a href="/esofGroup5/index.html">Main Page</a>
+
+        <h1 id="sample-markdown">Sample Markdown</h1>
+<p>This is some basic, # ESC Dashboard</p>
+<p><strong>Analytics Dashboard for the Empowerment Student Center</strong></p>
+<p><em>A proposed solution to transform Qualtrics survey data into actionable visualizations and statistics.</em></p>
+<hr>
+<h2 id="running-locally">Running Locally</h2>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>Python 3.9+</li>
+<li>A modern web browser (Chrome, Firefox, Safari, Edge)</li>
+</ul>
+<h3 id="1-set-up-the-virtual-environment">1. Set up the virtual environment</h3>
+<p>From the project root:</p>
+<pre><code class="lang-bash">python -m venv .venv
+source .venv/bin/<span class="hljs-built_in">activate</span>        <span class="hljs-comment"># macOS/Linux</span>
+<span class="hljs-comment"># .venv\Scripts\activate         # Windows</span>
+pip install flask
+</code></pre>
+<h3 id="2-start-the-flask-backend">2. Start the Flask backend</h3>
+<pre><code class="lang-bash"><span class="hljs-keyword">cd</span> esofGroup5/scripts
+<span class="hljs-keyword">python</span> main.<span class="hljs-keyword">py</span>
+</code></pre>
+<p>The server will start on <strong><a href="http://localhost:5001">http://localhost:5001</a></strong>.</p>
+<blockquote>
+<p><strong>macOS note:</strong> Port 5000 is reserved by AirPlay Receiver, so we use 5001. If you see a 403 error, make sure you&#39;re hitting port 5001, not 5000.</p>
+</blockquote>
+<h3 id="3-open-the-frontend">3. Open the frontend</h3>
+<p>Open <code>esofGroup5/index.html</code> directly in your browser (File → Open, or drag it in).</p>
+<h3 id="4-upload-a-csv">4. Upload a CSV</h3>
+<p>Click <strong>Choose File</strong>, select <code>esofGroup5/scripts/test.csv</code> (or any Qualtrics CSV export), then click <strong>Upload File</strong>.</p>
+<ul>
+<li>A dropdown will appear with all survey questions.</li>
+<li>Select a question to see a preview of its responses.</li>
+<li>Use the <strong>Question Type</strong> selector to label the question, then click <strong>Save Type</strong>.</li>
+</ul>
+<hr>
+<h2 id="project-vision">Project Vision</h2>
+<h3 id="the-problem">The Problem</h3>
+<p>The Empowerment Student Center (ESC) faculty member currently spends hours manually analyzing alumni exit survey data exported from Qualtrics.
+This multi-step process involves:</p>
+<ol>
+<li>Exporting CSV from Qualtrics</li>
+<li>Manually analyzing data in Excel</li>
+<li>Creating charts one-by-one</li>
+<li>Calculating statistics manually</li>
+<li>Formatting for presentations</li>
+</ol>
+<p>This process is time-consuming and prevents staff from focusing on interpretation and strategic planning.</p>
+<h3 id="our-proposed-solution">Our Proposed Solution</h3>
+<p>The <strong>ESC Dashboard</strong> would be a web application that:</p>
+<ul>
+<li>Accepts CSV files exported from Qualtrics</li>
+<li>Helps user pick question types</li>
+<li>Generates appropriate visualizations</li>
+<li>Calculates relevant statistics</li>
+<li>Provides interactive filtering and customization</li>
+</ul>
+<p><strong>Goal:</strong> Reduce multi-hour analysis process to minutes.</p>
+<h3 id="why-this-approach">Why This Approach</h3>
+<ul>
+<li><strong>User-Friendly</strong> - Designed for administrators without technical backgrounds</li>
+<li><strong>Proposal-Ready</strong> - Would help generate publication-quality outputs for funding proposals</li>
+<li><strong>All-in-One</strong> - Single application combining parsing, visualization, and export</li>
+</ul>
+<hr>
+<h2 id="proposed-features">Proposed Features</h2>
+<h3 id="core-functionality-planned-">Core Functionality (Planned)</h3>
+<ul>
+<li><strong>Automatic CSV Upload</strong> - One-click import of Qualtrics exports</li>
+<li><strong>Dynamic Visualizations</strong> - Appropriate chart generation based on question type selected:<ul>
+<li>Multiple Choice → Pie charts or bar charts with percentages</li>
+<li>Likert Scale → Stacked bar charts showing distribution</li>
+<li>Numeric → Histograms or box plots with mean/median</li>
+<li>Open-Ended Text → Word clouds showing common themes</li>
+</ul>
+</li>
+<li><strong>Statistical Analysis</strong> - Automatic calculation of means, medians, percentages, and other statistics depending on question type</li>
+<li><strong>Advanced Filtering</strong> - Ability to filter by demographics, date ranges, and variables</li>
+</ul>
+<h3 id="potential-future-features-stretch-goals-">Potential Future Features (Stretch Goals)</h3>
+<ul>
+<li>Custom chart styling and color schemes</li>
+<li>Save/load dashboard configurations</li>
+<li>An ability for Susan to save data</li>
+</ul>
+<p><em>Note: we are currently trying to have a small prototype for Susan so we can better understand what she needs</em></p>
+<hr>
+<h2 id="planned-tech-stack">Planned Tech Stack</h2>
+<p><em>These technologies have been selected for the project but not yet implemented.</em></p>
+<h3 id="frontend-proposed-">Frontend (Proposed)</h3>
+<ul>
+<li><strong>DJango</strong> - Component-based UI framework<ul>
+<li><em>Why:</em> Familiar to team, good for dashboard interfaces</li>
+</ul>
+</li>
+</ul>
+<h3 id="backend-proposed-">Backend (Proposed)</h3>
+<ul>
+<li><strong>Python 3.11+</strong> - Core language<ul>
+<li><em>Why:</em> Strong data science ecosystem</li>
+</ul>
+</li>
+<li><strong>Flask or FastAPI</strong> - Web framework<ul>
+<li><em>Decision pending:</em> Flask (simpler) vs FastAPI (better docs/performance)</li>
+</ul>
+</li>
+<li><strong>Pandas</strong> - Data manipulation<ul>
+<li><em>Why:</em> Industry standard for data analysis</li>
+</ul>
+</li>
+<li><strong>Matplotlib/Plotly</strong> - Chart generation<ul>
+<li><em>Decision pending:</em> Static (Matplotlib) vs Interactive (Plotly)</li>
+</ul>
+</li>
+</ul>
+<h3 id="deployment-proposed-">Deployment (Proposed)</h3>
+<ul>
+<li><strong>Vercel</strong> - Frontend hosting (free tier)</li>
+<li><strong>Render</strong> - Backend hosting (free tier)</li>
+<li><strong>GitHub</strong> - Version control</li>
+</ul>
+<hr>
+<h2 id="intended-usage">Intended Usage</h2>
+<p><em>This describes how the application would work when implemented.</em></p>
+<h3 id="for-end-users-theoretical-">For End Users (Theoretical)</h3>
+<h4 id="system-requirements">System Requirements</h4>
+<ul>
+<li>Modern web browser (Chrome, Firefox, Safari, Edge)</li>
+<li>Internet connection</li>
+<li>JavaScript enabled</li>
+</ul>
+<h4 id="planned-access-method">Planned Access Method</h4>
+<ol>
+<li>Navigate to: <code>https://esc-dashboard.vercel.app</code> <em>(not yet deployed)</em></li>
+<li>No installation or login required</li>
+<li>Bookmark for easy access</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> On free-tier hosting, first page load after 15+ minutes of inactivity may take 30-60 seconds for server to &quot;wake up.&quot;</p>
+</blockquote>
+<h3 id="proposed-user-workflow">Proposed User Workflow</h3>
+<p><strong>Step 1: Export from Qualtrics</strong></p>
+<ol>
+<li>Log into Qualtrics</li>
+<li>Open survey → Data &amp; Analysis tab</li>
+<li>Export &amp; Import → Export Data</li>
+<li>Select CSV format</li>
+<li>Download file</li>
+</ol>
+<p><strong>Step 2: Upload CSV (Theoretical)</strong></p>
+<ul>
+<li>Click &quot;Upload CSV&quot; or drag-and-drop file</li>
+<li>System processes (estimated 5-15 seconds)</li>
+<li>Preview data and parse questions</li>
+</ul>
+<p><strong>Step 3: View Visualizations (Theoretical)</strong></p>
+<ul>
+<li>System automatically detects question types</li>
+<li>Generates appropriate charts</li>
+<li>Calculates statistics</li>
+<li>Displays interactive dashboard</li>
+</ul>
+<p><strong>Step 4: Filter Data (Planned Feature)</strong></p>
+<ul>
+<li>Filter by demographics, dates, subgroups</li>
+<li>Visualizations update automatically</li>
+</ul>
+<hr>
+<h2 id="proposed-system-architecture">Proposed System Architecture</h2>
+<p><em>These diagrams represent our planned architecture, not implemented code.</em></p>
+<h3 id="conceptual-component-diagram">Conceptual Component Diagram</h3>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                <span class="hljs-selector-tag">User</span> <span class="hljs-selector-tag">Interface</span> (Planned)                 │
+│                    (Django)                             │
+├──────────────┬──────────────┬──────────────┬────────────┤
+│   <span class="hljs-selector-tag">Upload</span>     │  <span class="hljs-selector-tag">Dashboard</span>   │   <span class="hljs-selector-tag">Filter</span>     │   <span class="hljs-selector-tag">Export</span>   │
+│  <span class="hljs-selector-tag">Component</span>   │  <span class="hljs-selector-tag">Component</span>   │  <span class="hljs-selector-tag">Component</span>   │ <span class="hljs-selector-tag">Component</span>  │
+│  (Not built) │ (Not built)  │ (Not built)  │  (stretch) │
+└──────┬───────┴──────┬───────┴──────┬───────┴─────┬──────┘
+       │              │              │             │
+       └──────────────┴──────────────┴─────────────┘
+                      │
+                      │
+       ┌──────────────┴──────────────┐
+       │                             │
+┌──────▼─────────┐         ┌─────────▼────────┐
+│   <span class="hljs-selector-tag">CSV</span> <span class="hljs-selector-tag">parser</span>   │         │  <span class="hljs-selector-tag">Visualization</span>   │
+│    <span class="hljs-selector-tag">Service</span>     │         │     <span class="hljs-selector-tag">Service</span>      │
+│  (Proposed)    │         │   (Proposed)     │
+└──────┬─────────┘         └─────────┬────────┘
+       │                             │
+       └──────────────┬──────────────┘
+                      │
+              ┌───────▼────────┐
+              │  <span class="hljs-selector-tag">Data</span> <span class="hljs-selector-tag">Analysis</span> │
+              │    <span class="hljs-selector-tag">Service</span>     │
+              │   (Proposed)   │
+              └────────────────┘
+</code></pre><h3 id="theoretical-data-flow">Theoretical Data Flow</h3>
+<pre><code><span class="hljs-symbol">User</span>
+ │
+ │ <span class="hljs-number">1</span>. Would upload CSV
+ ▼
+<span class="hljs-symbol">Frontend</span> (To <span class="hljs-keyword">be </span><span class="hljs-keyword">built)
+</span> │
+ │ <span class="hljs-number">2</span>. Would send CSV file via API
+ ▼
+<span class="hljs-keyword">Backend </span>API (To <span class="hljs-keyword">be </span><span class="hljs-keyword">built)
+</span> │
+ │ <span class="hljs-number">3</span>. Would help parse &amp; analyze
+ ▼
+<span class="hljs-symbol">CSV</span> Parser → Question <span class="hljs-keyword">Selector </span>(<span class="hljs-keyword">Both </span>planned)
+ │
+ │ <span class="hljs-number">4</span>. Would generate visualizations
+ ▼
+<span class="hljs-symbol">Chart</span> Generator (Planned)
+ │
+ │ <span class="hljs-number">5</span>. Would return <span class="hljs-meta">data</span> + charts
+ ▼
+<span class="hljs-symbol">Frontend</span> Display (To <span class="hljs-keyword">be </span><span class="hljs-keyword">built)
+</span> │
+ │ <span class="hljs-number">6</span>. Would show dashboard
+ ▼
+<span class="hljs-symbol">User</span> views results
+</code></pre><h3 id="hypothetical-csv-upload-flow">Hypothetical CSV Upload Flow</h3>
+<pre><code><span class="hljs-selector-tag">User</span>          <span class="hljs-selector-tag">Frontend</span>        <span class="hljs-selector-tag">Backend</span>         <span class="hljs-selector-tag">Parser</span>         <span class="hljs-selector-tag">Analyzer</span>      <span class="hljs-selector-tag">Chart</span> <span class="hljs-selector-tag">Gen</span>
+ │               │              │              │               │              │
+ │ <span class="hljs-selector-tag">Upload</span> <span class="hljs-selector-tag">CSV</span>    │              │              │               │              │
+ ├──────────────▶│              │              │               │              │
+ │         (theoretical)        │              │               │              │
+ │               │ <span class="hljs-selector-tag">POST</span> /<span class="hljs-selector-tag">upload</span> │              │               │              │
+ │               ├─────────────▶│              │               │              │
+ │               │        (to be implemented)  │               │              │
+ │               │              │ <span class="hljs-selector-tag">Parse</span> <span class="hljs-selector-tag">CSV</span>    │               │              │
+ │               │              ├─────────────▶│               │              │
+ │               │              │        (planned logic)       │              │
+ │               │              │              │ <span class="hljs-selector-tag">Question</span> <span class="hljs-selector-tag">types</span>│              │
+ │               │              │              ├──────────────▶│              │
+ │               │              │              │        (to be built)         │
+ │               │              │              │               │ <span class="hljs-selector-tag">Generate</span>     │
+ │               │              │              │               │ <span class="hljs-selector-tag">charts</span>       │
+ │               │              │              │               ├─────────────▶│
+ │               │              │              │               │  (planned)   │
+ │               │              │◀─────────────┴───────────────┴──────────────┘
+ │               │              │ <span class="hljs-selector-tag">Return</span> <span class="hljs-selector-tag">JSON</span> (would happen here)
+ │               │◀─────────────┤
+ │ <span class="hljs-selector-tag">Display</span>       │              │
+ │ <span class="hljs-selector-tag">Dashboard</span>     │              │
+ │◀──────────────┤              │
+
+(All arrows represent planned functionality, not implemented code)
+</code></pre><hr>
+<h4 id="hypothetical-setup-instructions">Hypothetical Setup Instructions</h4>
+<p><em>These will work once code is implemented:</em></p>
+<p><strong>Frontend (Not yet available):</strong></p>
+<pre><code class="lang-bash">cd frontend
+<span class="hljs-built_in">npm</span> install          <span class="hljs-comment"># Dependencies don't exist yet</span>
+<span class="hljs-built_in">npm</span> run dev          <span class="hljs-comment"># No dev server to run yet</span>
+</code></pre>
+<p><strong>Backend (Not yet available):</strong></p>
+<pre><code class="lang-bash"><span class="hljs-keyword">cd</span> backend
+python -<span class="hljs-keyword">m</span> venv venv           # Can create, but <span class="hljs-keyword">no</span> code to <span class="hljs-keyword">run</span>
+source venv/bin/activate
+pip install -r requirements.txt  # <span class="hljs-keyword">File</span> doesn't exist yet
+flask <span class="hljs-keyword">run</span> --debug             # <span class="hljs-keyword">No</span> Flask <span class="hljs-keyword">app</span> to <span class="hljs-keyword">run</span> yet
+</code></pre>
+<hr>
+<h2 id="contact-support">Contact &amp; Support</h2>
+<h3 id="project-team">Project Team</h3>
+<ul>
+<li><strong>Ari</strong> - Backend Development, Data Science<ul>
+<li>Email: osmunjai@gmail.com</li>
+</ul>
+</li>
+<li><strong>Howl</strong> - Frontend Development, UX Design<ul>
+<li>Email: howlhund@gmail.com</li>
+</ul>
+</li>
+</ul>
+<h3 id="client">Client</h3>
+<ul>
+<li><strong>Susan</strong> - Empowerment Student Center</li>
+<li><strong>Organization:</strong> Montana State University</li>
+</ul>
+<h3 id="report-issues-when-application-exists-">Report Issues (When Application Exists)</h3>
+<p><strong>For End Users:</strong></p>
+<ul>
+<li>Email the team with:<ul>
+<li>Description of what you tried to do</li>
+<li>What happened vs. what you expected</li>
+<li>Error messages</li>
+<li>Screenshots</li>
+</ul>
+</li>
+</ul>
+<p><strong>For Developers:</strong></p>
+<ul>
+<li>GitHub Issues (when repository is public)</li>
+<li>Bug report template (to be created)
+sample markdown.</li>
+</ul>
+
+
     </body>
 </html>

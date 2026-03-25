@@ -12,7 +12,7 @@
         </Ul>
         <br><br><br>
 
-        <!-- Shown after questions are loaded — lets the user pick a question -->
+        <!-- Shown after questions are loaded - lets the user pick a question -->
         <div id="question-selector">
             <label for="questionSelect"><strong>Select a question:</strong></label>
             <br>
@@ -21,7 +21,7 @@
             </select>
         </div>
 
-        <!-- Shown after the user selects a question — preview + type assignment -->
+        <!-- Shown after the user selects a question - preview + type assignment -->
         <div id="question-detail" style="display:none">
             <br>
             <h3 id="question-heading"></h3>
@@ -68,7 +68,7 @@
                     populateQuestionDropdown(data);
                 })
                 .catch(() => {
-                    // No questions yet (no CSV uploaded) — silently do nothing.
+                    // No questions yet (no CSV uploaded) - silently do nothing.
                 });
 
             // Fills the question <select> with one <option> per question.

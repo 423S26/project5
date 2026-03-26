@@ -12,6 +12,73 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # In-memory store for parsed questions. Populated on /upload, read by /questions.
 questions = {}
 
+
+def auto_detect_type(question_text, responses):
+    """
+    Attempts to infer the question type from its text and response values.
+    Returns one of: 'likert', 'ranking', 'multiple_choice', 'yes_no',
+                    'rating', 'short_answer', or None if indeterminate.
+
+    Strategy:
+      1. Keyword matching on the question text (most reliable for Qualtrics exports).
+      2. Response value analysis as a fallback.
+    """
+    text = question_text.lower()
+
+    # --- Text-based detection ---
+    likert_keywords = [
+        'strongly disagree', 'strongly agree',
+        'scale: 1-5', '1-strongly', '1 = strongly',
+        'very dissatisfied', 'very satisfied',
+        'level of agreement',
+    ]
+    ranking_keywords = [
+        'rank', 'order of importance',
+        'most important', 'least important',
+        'drag and drop',
+    ]
+    multichoice_keywords = ['select all that apply']
+
+    if any(k in text for k in likert_keywords):
+        return 'likert'
+    if any(k in text for k in ranking_keywords):
+        return 'ranking'
+    if any(k in text for k in multichoice_keywords):
+        return 'multiple_choice'
+
+    # --- Response value analysis ---
+    non_empty = [r.strip() for r in responses if r.strip()]
+    if not non_empty:
+        return None
+
+    unique_lower = set(v.lower() for v in non_empty)
+
+    # Yes / No
+    if unique_lower <= {'yes', 'no'}:
+        return 'yes_no'
+
+    # All numeric
+    try:
+        nums = [float(r) for r in non_empty]
+        # Check if every value is a whole number
+        if all(n == int(n) for n in nums):
+            int_set = set(int(n) for n in nums)
+            if int_set <= {1, 2, 3, 4, 5}:
+                return 'likert'
+            if int_set <= set(range(1, 8)):
+                return 'ranking'
+        return 'likert'
+    except ValueError:
+        pass
+
+    # Small fixed set of repeated strings → multiple choice
+    if len(unique_lower) <= 8 and len(non_empty) > len(unique_lower):
+        return 'multiple_choice'
+
+    # Default: free-text
+    return 'short_answer'
+
+
 # Serves the main page. On Render, the user hits the root URL and gets index.html.
 @app.route('/')
 @app.route('/index.html')
@@ -27,16 +94,20 @@ def Analytics():
 def documentation():
     return send_from_directory(BASE_DIR, 'documentation.html')
 
-@app.route('/Responses.html')
-def Responses():
-    return send_from_directory(BASE_DIR, 'Responses.html')
-
+@app.route('/Surveys.html')
+def Surveys():
+    return send_from_directory(BASE_DIR, 'Surveys.html')
 
 
 # Serves the CSS file. The HTML references /style/style.css so Flask needs to handle it.
 @app.route('/style/<path:filename>')
 def styles(filename):
     return send_from_directory(os.path.join(BASE_DIR, 'style'), filename)
+
+# Serves JS files from the js directory.
+@app.route('/js/<path:filename>')
+def js_scripts(filename):
+    return send_from_directory(os.path.join(BASE_DIR, 'js'), filename)
 
 # Accepts a CSV file upload and parses it into questions.
 # The Qualtrics export format has:
@@ -81,9 +152,10 @@ def upload():
             continue
         question_text = values[0]
         if question_text:
+            response_values = values[1:]
             renamed[question_text] = {
-                "options": values[1:],  # rows 3+ are the actual responses
-                "type": None            # type is unset until /questions/set-type is called
+                "options": response_values,
+                "type": auto_detect_type(question_text, response_values)
             }
 
     questions = renamed

@@ -1,6 +1,45 @@
+/* global Chart */
+
 // Holds the full questions data (including options) after load.
 // Keyed by question text, same structure as Flask's /questions response.
 let questionsData = {};
+
+// Tracks the current Chart.js instance so we can destroy it before re-rendering.
+let activeChart = null;
+
+function renderChart(type, labels, values) {
+  const canvas = document.getElementById("stats-chart");
+  if (activeChart) {
+    activeChart.destroy();
+    activeChart = null;
+  }
+  const isBar = type === "bar";
+  activeChart = new Chart(canvas, {
+    type: isBar ? "bar" : "pie",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          data: values,
+          backgroundColor: [
+            "#4e79a7",
+            "#f28e2b",
+            "#e15759",
+            "#76b7b2",
+            "#59a14f",
+            "#edc948",
+            "#b07aa1",
+            "#ff9da7",
+          ],
+        },
+      ],
+    },
+    options: {
+      plugins: { legend: { display: !isBar } },
+      scales: isBar ? { y: { beginAtZero: true, ticks: { stepSize: 1 } } } : {},
+    },
+  });
+}
 
 // Load questions from the server on page load.
 fetch("/questions")
@@ -81,6 +120,10 @@ document.getElementById("typeSelect").addEventListener("change", function () {
 
   if (!type || !question) {
     document.getElementById("stats-section").style.display = "none";
+    if (activeChart) {
+      activeChart.destroy();
+      activeChart = null;
+    }
     return;
   }
 
@@ -122,6 +165,18 @@ document.getElementById("typeSelect").addEventListener("change", function () {
         `<p>Mean: ${mean.toFixed(2)}</p>` +
         `<p>Median: ${median}</p>` +
         `<p>Mode: ${mode}</p>`;
+
+      // Bar chart of value distribution.
+      const chartFreq = {};
+      numbers.forEach((n) => (chartFreq[n] = (chartFreq[n] || 0) + 1));
+      const chartEntries = Object.entries(chartFreq).sort(
+        (a, b) => a[0] - b[0],
+      );
+      renderChart(
+        "bar",
+        chartEntries.map((e) => e[0]),
+        chartEntries.map((e) => e[1]),
+      );
     }
   } else if (type === "multiple_choice" || type === "yes_no") {
     // For categorical questions, show a frequency table and the mode.
@@ -141,11 +196,23 @@ document.getElementById("typeSelect").addEventListener("change", function () {
     });
     html += "</table>";
     statsOutput.innerHTML = html;
+
+    // Pie chart of answer distribution.
+    renderChart(
+      "pie",
+      sorted.map((e) => e[0]),
+      sorted.map((e) => e[1]),
+    );
   } else if (type === "short_answer") {
     // Free text — can't do numeric stats, just show the response count.
     statsOutput.innerHTML =
       `<p>Responses counted: ${responses.length}</p>` +
       "<p>Mean / median / mode are not applicable for short answer questions.</p>";
+    // Destroy any previous chart — nothing to graph for free text.
+    if (activeChart) {
+      activeChart.destroy();
+      activeChart = null;
+    }
   }
 
   document.getElementById("stats-section").style.display = "block";

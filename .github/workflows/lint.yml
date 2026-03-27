@@ -1,0 +1,82 @@
+# Runs all linters and format checks on every push and pull request.
+# Each job runs independently so failures are reported separately.
+
+name: Lint
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+
+  lint-python:
+    name: Python (flake8 + black)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run flake8
+        run: flake8 esofGroup5/scripts/main.py --config=.flake8
+
+      - name: Check black formatting
+        run: black --check esofGroup5/scripts/main.py
+
+  lint-html:
+    name: HTML (htmlhint + prettier)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install tools
+        run: npm install -g htmlhint prettier
+
+      - name: Run htmlhint
+        run: htmlhint "esofGroup5/**/*.html" --config .htmlhintrc
+
+      - name: Check prettier formatting
+        run: prettier --check "esofGroup5/**/*.html"
+
+  lint-js:
+    name: JavaScript (eslint + prettier)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install tools
+        run: npm install -g eslint prettier
+
+      - name: Run eslint
+        run: |
+          if find esofGroup5/js -name "*.js" | grep -q .; then
+            eslint "esofGroup5/js/**/*.js"
+          else
+            echo "No JS files found, skipping."
+          fi
+
+      - name: Check prettier formatting
+        run: |
+          if find esofGroup5/js -name "*.js" | grep -q .; then
+            prettier --check "esofGroup5/js/**/*.js"
+          else
+            echo "No JS files found, skipping."
+          fi

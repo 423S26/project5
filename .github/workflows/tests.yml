@@ -1,0 +1,33 @@
+# Runs the test suite on every push and every pull request.
+# GitHub will show a green checkmark or red X on commits and PRs based on the result.
+
+name: Run Tests
+
+on:
+  push:
+    branches: ["**"]       # run on pushes to any branch
+  pull_request:
+    branches: ["**"]       # run on PRs targeting any branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repo so the runner has access to the code.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install the Python version we're developing against.
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Step 3: Install Flask and pytest from requirements.txt.
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Step 4: Run pytest from the scripts directory where test_main.py lives.
+      - name: Run tests
+        run: pytest esofGroup5/scripts/test_main.py -v

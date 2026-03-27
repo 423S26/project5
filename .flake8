@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 120
+# W503: line break before binary operator — conflicts with Black formatter style
+# E302: expected 2 blank lines — relaxed for small scripts
+ignore = W503
+exclude = .venv, __pycache__

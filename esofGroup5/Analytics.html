@@ -7,7 +7,7 @@
         <Ul class="navigation">
             <li><a href="index.html">Home</a></li>
             <li><a href="Responses.html">Responses</a></li>
-            <li><a href="Analytics.html" class="highlighted">Analytics</a></li>
+            <li><a href="Analytics.html">Analytics</a></li>
             <li><a href="documentation.html">Documentation</a></li>
         </Ul>
         <h2>Analytics</h2>
@@ -35,11 +35,10 @@
             <select id="typeSelect">
                 <option value="">-- Select type --</option>
                 <option value="multiple_choice">Multiple Choice</option>
-                <option value="likert">Likert Scale (1-5)</option>
+                <option value="likert">Likert / Scale</option>
                 <option value="ranking">Ranking</option>
                 <option value="short_answer">Short Answer</option>
                 <option value="yes_no">Yes / No</option>
-                <option value="rating">Rating / Satisfaction</option>
             </select>
 
             <button id="saveTypeBtn">Save Type</button>
@@ -55,8 +54,6 @@
             </div>
         </div>
 
-        </div>
-        
         <script>
             // Holds the full questions data (including options) after load.
             // Keyed by question text, same structure as Flask's /questions response.

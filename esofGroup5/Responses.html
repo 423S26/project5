@@ -3,20 +3,22 @@
         <link rel="stylesheet" href="/style/style.css">
     </head>
     <body>
-        <h1>Responses</h1>
+        <h1>ESC Dashboard</h1>
         <Ul class="navigation">
             <li><a href="index.html">Home</a></li>
-            <li><a href="Responses.html">Responses</a></li>
+            <li><a href="Responses.html" class="highlighted">Responses</a></li>
             <li><a href="Analytics.html">Analytics</a></li>
             <li><a href="documentation.html">Documentation</a></li>
         </Ul>
-        <br><br><br>
-
-        <!-- File upload form.
+        
+        <h2>Responses</h2>
+        
+        <div class="display_box">
+             <!-- File upload form.
              enctype="multipart/form-data" is required for file uploads.
              No action/method attributes — submission is handled by JS below
              so the page doesn't navigate away. -->
-        <form id="uploadForm" enctype="multipart/form-data" class="csv_form">
+            <form id="uploadForm" enctype="multipart/form-data" class="csv_form">
             <label for="fileToUpload">Select file to upload:</label>
             <br>
             <!-- accept=".csv" restricts the file picker to CSV files only -->
@@ -27,6 +29,8 @@
 
         <!-- Shows upload progress and error messages to the user -->
         <div id="status"></div>
+        </div>
+       
 
         <script>
             // --- UPLOAD HANDLER ---

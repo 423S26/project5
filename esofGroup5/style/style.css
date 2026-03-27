@@ -1,9 +1,76 @@
+h1{
+    background-color: rebeccapurple;
+    color: aliceblue;
+    padding: 20px;
+    margin: 0px;
+}
+
+h2, h3, h4, p{
+    padding: 20px;
+    margin: 10px;
+}
+
+body{
+    margin: 0px;
+}
+
+p{
+    padding: 10px;
+    text-indent: 40px;
+}
+
+input{
+    padding: 10px;
+}
+
+
+.display_box{
+    background-color: rgb(185, 185, 185);
+    padding: 30px;
+    border-radius: 5px;
+    margin: 60px;
+
+}
+
+
+.navigation li a{
+    text-decoration: none;
+    padding: 20px;
+    color: rebeccapurple;
+    
+}
+
+.navigation{
+    margin: 30px;
+
+    display: block;
+}
+
 .navigation li{
     display: inline;
-    padding: 20px;
+    padding: 0px;
+    margin: 20px;
+    font-size: 15px;
+    font-weight: 500;
+
 }
 
-.upload-csv form{
-    
+.navigation li :hover {
+    background-color: rebeccapurple;
+    color: aliceblue;
+    border-radius: 15px;
 
 }
+
+.highlighted {
+    background-color: rebeccapurple;
+    color: aliceblue !important;
+    border-radius: 15px;
+}
+
+
+.navigation{
+    padding-left: 0px;
+}
+
+

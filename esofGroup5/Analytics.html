@@ -3,16 +3,16 @@
         <link rel="stylesheet" href="/style/style.css">
     </head>
     <body>
-        <h1>Analytics</h1>
+        <h1>ESC Dashboard</h1>
         <Ul class="navigation">
             <li><a href="index.html">Home</a></li>
             <li><a href="Responses.html">Responses</a></li>
-            <li><a href="Analytics.html">Analytics</a></li>
+            <li><a href="Analytics.html" class="highlighted">Analytics</a></li>
             <li><a href="documentation.html">Documentation</a></li>
         </Ul>
-        <br><br><br>
-
-        <!-- Shown after questions are loaded - lets the user pick a question -->
+        <h2>Analytics</h2>
+        <div class="display_box">
+            <!-- Shown after questions are loaded - lets the user pick a question -->
         <div id="question-selector">
             <label for="questionSelect"><strong>Select a question:</strong></label>
             <br>
@@ -55,6 +55,8 @@
             </div>
         </div>
 
+        </div>
+        
         <script>
             // Holds the full questions data (including options) after load.
             // Keyed by question text, same structure as Flask's /questions response.

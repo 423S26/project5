@@ -159,12 +159,14 @@ document.getElementById("typeSelect").addEventListener("change", function () {
       const freq = {};
       numbers.forEach((n) => (freq[n] = (freq[n] || 0) + 1));
       const mode = Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
+      const standard_deviation = getStandardDeviation(numbers)
 
       statsOutput.innerHTML =
         `<p>Responses counted: ${numbers.length}</p>` +
         `<p>Mean: ${mean.toFixed(2)}</p>` +
         `<p>Median: ${median}</p>` +
-        `<p>Mode: ${mode}</p>`;
+        `<p>Mode: ${mode}</p>` +
+        `<p>Standard Deviation: ${standard_deviation}</p>`;
 
       // Bar chart of value distribution.
       const chartFreq = {};
@@ -249,3 +251,10 @@ document.getElementById("saveTypeBtn").addEventListener("click", function () {
       document.getElementById("saveStatus").textContent = " Failed to save.";
     });
 });
+
+// Calculate Standard Deviation
+function getStandardDeviation (array) {
+  const n = array.length
+  const mean = array.reduce((a, b) => a + b) / n
+  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+}

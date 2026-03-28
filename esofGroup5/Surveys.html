@@ -16,19 +16,18 @@
              enctype="multipart/form-data" is required for file uploads.
              No action/method attributes — submission is handled by JS below
              so the page doesn't navigate away. -->
-    <form id="uploadForm" enctype="multipart/form-data" class="csv_form">
-      <label for="fileToUpload">Select file to upload:</label>
-      <br />
-      <!-- accept=".csv" restricts the file picker to CSV files only -->
-      <input type="file" name="file" id="fileToUpload" accept=".csv" />
-      <br />
-      <input type="submit" value="Upload File" name="submit" />
-    </form>
+      <form id="uploadForm" enctype="multipart/form-data" class="csv_form">
+        <label for="fileToUpload">Select file to upload:</label>
+        <br />
+        <!-- accept=".csv" restricts the file picker to CSV files only -->
+        <input type="file" name="file" id="fileToUpload" accept=".csv" />
+        <br />
+        <input type="submit" value="Upload File" name="submit" />
+      </form>
 
-    <!-- Shows upload progress and error messages to the user -->
-    <div id="status"></div>
+      <!-- Shows upload progress and error messages to the user -->
+      <div id="status"></div>
     </div>
-    
 
     <script src="/js/surveys.js"></script>
   </body>

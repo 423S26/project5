@@ -53,61 +53,57 @@ fetch("/questions")
     // No questions yet (no CSV uploaded) - silently do nothing.
   });
 
-
-
-
 //------------QUESTION BOXES VISUALISZATION-------------------------
-function fillQuestionBoxes(data){
-
+function fillQuestionBoxes(data) {
   const parent_container = document.getElementById("question_boxes");
   parent_container.innerHTML = "";
   Object.keys(data).forEach(function (q) {
     // For each data entry q (Question Name)
-    const child_box = document.createElement('div');
-    child_box.classList.add('question_box');
+    const child_box = document.createElement("div");
+    child_box.classList.add("question_box");
     child_box.textContent = q;
-    child_box.addEventListener("click", function(){expand_question(data, q)});
+    child_box.addEventListener("click", function () {
+      expand_question(data, q);
+    });
     parent_container.append(child_box);
   });
 }
 
 // ------------EXPAND BOX--------------------------------------------
-function expand_question(data,q){
+function expand_question(data, q) {
   // alert(q)
   const select = document.getElementById("questionSelect");
   select.value = q;
   // Trigger Change to update information
-  const change = new Event('change');
-  select.dispatchEvent(change)
- 
+  const change = new Event("change");
+  select.dispatchEvent(change);
+
   // Window Scroll To section
   const section = document.getElementById("question-detail");
   section.scrollIntoView({
-    behavior : 'smooth',
-    block: 'start'
+    behavior: "smooth",
+    block: "start",
   });
 }
 
-
 // ------------QUESTION SEARCH---------------------------------------------------------
-document.getElementById("question_search").addEventListener('input', function(){
-  
-  
-  const val = document.getElementById("question_search").value.toLowerCase();
+document
+  .getElementById("question_search")
+  .addEventListener("input", function () {
+    const val = document.getElementById("question_search").value.toLowerCase();
 
-  const keys = Object.keys(questionsData);
-  
-  const new_data = Object.fromEntries(
-    Object.entries(questionsData).filter(([key, value]) => {
-      return key.toLowerCase().includes(val);
-    })
-  );
-  
-  fillQuestionBoxes(new_data);
-});
+    const keys = Object.keys(questionsData);
+
+    const new_data = Object.fromEntries(
+      Object.entries(questionsData).filter(([key, value]) => {
+        return key.toLowerCase().includes(val);
+      }),
+    );
+
+    fillQuestionBoxes(new_data);
+  });
 
 // ------------SELECT CATEGORY---------------------------------------------------------
-
 
 // Fills the question <select> with one <option> per question.
 function populateQuestionDropdown(data) {
@@ -216,7 +212,7 @@ document.getElementById("typeSelect").addEventListener("change", function () {
       const freq = {};
       numbers.forEach((n) => (freq[n] = (freq[n] || 0) + 1));
       const mode = Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
-      const standard_deviation = getStandardDeviation(numbers)
+      const standard_deviation = getStandardDeviation(numbers);
 
       statsOutput.innerHTML =
         `<p>Responses counted: ${numbers.length}</p>` +
@@ -277,8 +273,6 @@ document.getElementById("typeSelect").addEventListener("change", function () {
   document.getElementById("stats-section").style.display = "block";
 });
 
-
-
 // --- SAVE TYPE HANDLER ---
 document.getElementById("saveTypeBtn").addEventListener("click", function () {
   const question = document.getElementById("questionSelect").value;
@@ -312,8 +306,10 @@ document.getElementById("saveTypeBtn").addEventListener("click", function () {
 });
 
 // Calculate Standard Deviation
-function getStandardDeviation (array) {
-  const n = array.length
-  const mean = array.reduce((a, b) => a + b) / n
-  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+function getStandardDeviation(array) {
+  const n = array.length;
+  const mean = array.reduce((a, b) => a + b) / n;
+  return Math.sqrt(
+    array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n,
+  );
 }

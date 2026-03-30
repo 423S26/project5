@@ -47,10 +47,45 @@ fetch("/questions")
   .then((data) => {
     questionsData = data;
     populateQuestionDropdown(data);
+    fillQuestionBoxes(data);
   })
   .catch(() => {
     // No questions yet (no CSV uploaded) - silently do nothing.
   });
+
+
+//------------QUESTION BOXES VISUALISZATION-------------------------
+function fillQuestionBoxes(data){
+
+  const parent_container = document.getElementById("question_boxes");
+
+  Object.keys(data).forEach(function (q) {
+    // For each data entry q (Question Name)
+    const child_box = document.createElement('div');
+    child_box.classList.add('question_box');
+    child_box.textContent = q;
+    child_box.addEventListener("click", function(){expand_question(data, q)});
+    parent_container.append(child_box);
+  });
+}
+
+// ------------EXPAND BOX--------------------------------------------
+function expand_question(data,q){
+  // alert(q)
+  const select = document.getElementById("questionSelect");
+  select.value = q;
+  // Trigger Change to update information
+  const change = new Event('change');
+  select.dispatchEvent(change)
+ 
+  // Window Scroll To section
+  const section = document.getElementById("question-detail");
+  section.scrollIntoView({
+    behavior : 'smooth',
+    block: 'start'
+  });
+}
+
 
 // Fills the question <select> with one <option> per question.
 function populateQuestionDropdown(data) {

@@ -54,11 +54,13 @@ fetch("/questions")
   });
 
 
+
+
 //------------QUESTION BOXES VISUALISZATION-------------------------
 function fillQuestionBoxes(data){
 
   const parent_container = document.getElementById("question_boxes");
-
+  parent_container.innerHTML = "";
   Object.keys(data).forEach(function (q) {
     // For each data entry q (Question Name)
     const child_box = document.createElement('div');
@@ -85,6 +87,26 @@ function expand_question(data,q){
     block: 'start'
   });
 }
+
+
+// ------------QUESTION SEARCH---------------------------------------------------------
+document.getElementById("question_search").addEventListener('input', function(){
+  
+  
+  const val = document.getElementById("question_search").value.toLowerCase();
+
+  const keys = Object.keys(questionsData);
+  
+  const new_data = Object.fromEntries(
+    Object.entries(questionsData).filter(([key, value]) => {
+      return key.toLowerCase().includes(val);
+    })
+  );
+  
+  fillQuestionBoxes(new_data);
+});
+
+// ------------SELECT CATEGORY---------------------------------------------------------
 
 
 // Fills the question <select> with one <option> per question.
@@ -254,6 +276,8 @@ document.getElementById("typeSelect").addEventListener("change", function () {
 
   document.getElementById("stats-section").style.display = "block";
 });
+
+
 
 // --- SAVE TYPE HANDLER ---
 document.getElementById("saveTypeBtn").addEventListener("click", function () {

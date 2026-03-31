@@ -159,7 +159,7 @@ document.getElementById("typeSelect").addEventListener("change", function () {
       const freq = {};
       numbers.forEach((n) => (freq[n] = (freq[n] || 0) + 1));
       const mode = Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
-      const standard_deviation = getStandardDeviation(numbers)
+      const standard_deviation = getStandardDeviation(numbers);
 
       statsOutput.innerHTML =
         `<p>Responses counted: ${numbers.length}</p>` +
@@ -253,8 +253,10 @@ document.getElementById("saveTypeBtn").addEventListener("click", function () {
 });
 
 // Calculate Standard Deviation
-function getStandardDeviation (array) {
-  const n = array.length
-  const mean = array.reduce((a, b) => a + b) / n
-  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+function getStandardDeviation(array) {
+  const n = array.length;
+  const mean = array.reduce((a, b) => a + b) / n;
+  return Math.sqrt(
+    array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n,
+  );
 }

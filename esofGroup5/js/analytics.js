@@ -7,6 +7,8 @@ let questionsData = {};
 // Tracks the current Chart.js instance so we can destroy it before re-rendering.
 let activeChart = null;
 
+let current_question = "";
+
 function renderChart(type, labels, values) {
   const canvas = document.getElementById("stats-chart");
   if (activeChart) {
@@ -46,7 +48,6 @@ fetch("/questions")
   .then((res) => res.json())
   .then((data) => {
     questionsData = data;
-    populateQuestionDropdown(data);
     fillQuestionBoxes(data);
   })
   .catch(() => {
@@ -66,34 +67,74 @@ function fillQuestionBoxes(data){
     const child_box = document.createElement('div');
     child_box.classList.add('question_box');
     child_box.textContent = q;
-    child_box.addEventListener("click", function(){expand_question(data, q)});
+    child_box.addEventListener("click", function(){update_question(data, q)});
     parent_container.append(child_box);
   });
 }
 
-// ------------EXPAND BOX--------------------------------------------
-function expand_question(data,q){
-  // alert(q)
-  const select = document.getElementById("questionSelect");
-  select.value = q;
+// ------------UPDATE QUESTION--------------------------------------------
+function update_question(data,q){
+  // if (!selected) {
+  //   document.getElementById("question-detail").style.display = "none";
+  //   return;
+  // }
+
+  const question = questionsData[q];
+  current_question = q;
+
+  // Show the full question text as a heading.
+  document.getElementById("question-heading").textContent = q;
+
+  // Show up to 5 non-empty responses as a preview.
+  const previewList = document.getElementById("response-preview");
+  previewList.innerHTML = "";
+
+  const nonEmpty = question.options.filter((r) => r.trim() !== "");
+  const preview = nonEmpty.slice(0, 5); 
+
+  if (preview.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "(no responses recorded)";
+    previewList.appendChild(li);
+  } else {
+    preview.forEach(function (response) {
+      const li = document.createElement("li");
+      li.textContent = response;
+      previewList.appendChild(li);
+    });
+    
+    
+  }
+
+  // Pre-select the detected/saved type and clear old status.
+  document.getElementById("typeSelect").value = question.type || "";
+  document.getElementById("saveStatus").textContent = "";
+
+  document.getElementById("question-detail").style.display = "block";
+
+  // If a type is already set, render stats immediately without requiring
+  // the user to manually re-select it.
+  document.getElementById("typeSelect").dispatchEvent(new Event("change"));
+
   // Trigger Change to update information
-  const change = new Event('change');
-  select.dispatchEvent(change)
- 
+  
+
   // Window Scroll To section
   const section = document.getElementById("question-detail");
+
   section.scrollIntoView({
     behavior : 'smooth',
     block: 'start'
   });
+  // generateGraph(q);
 }
 
 
 // ------------QUESTION SEARCH---------------------------------------------------------
 document.getElementById("question_search").addEventListener('input', function(){
-  
-  
+
   const val = document.getElementById("question_search").value.toLowerCase();
+  
 
   const keys = Object.keys(questionsData);
   
@@ -106,75 +147,35 @@ document.getElementById("question_search").addEventListener('input', function(){
   fillQuestionBoxes(new_data);
 });
 
-// ------------SELECT CATEGORY---------------------------------------------------------
 
 
-// Fills the question <select> with one <option> per question.
-function populateQuestionDropdown(data) {
-  const select = document.getElementById("questionSelect");
-  select.innerHTML = '<option value="">-- Choose a question --</option>';
 
-  Object.keys(data).forEach(function (q) {
-    const option = document.createElement("option");
-    option.value = q;
-    // Truncate long question text so the dropdown stays readable.
-    option.textContent = q.length > 80 ? q.substring(0, 80) + "..." : q;
-    select.appendChild(option);
-  });
-}
+// ------------SELECT BY QUESTION TYPE--------------------------------------------
 
-// --- QUESTION SELECTION HANDLER ---
-document
-  .getElementById("questionSelect")
-  .addEventListener("change", function () {
-    const selected = this.value;
+document.getElementById("sort_by_category").addEventListener('change', function(){
 
-    if (!selected) {
-      document.getElementById("question-detail").style.display = "none";
-      return;
-    }
+  const type_search = document.getElementById("sort_by_category").value.toLowerCase();
+  if(type_search != 'none'){
+    const keys = Object.keys(questionsData);
+    const values= JSON.stringify(Object.values(questionsData));
+    const new_data = Object.fromEntries(
+      Object.entries(questionsData).filter(([key, value]) => {
+        return questionsData[key].type == type_search;
+      })
+    );
+    fillQuestionBoxes(new_data);
+  }else{
+    fillQuestionBoxes(questionsData);
+  }
+  
+});
 
-    const question = questionsData[selected];
+// ---- GENERATE GRAPH--------------------------------------------------------
 
-    // Show the full question text as a heading.
-    document.getElementById("question-heading").textContent = selected;
-
-    // Show up to 5 non-empty responses as a preview.
-    const previewList = document.getElementById("response-preview");
-    previewList.innerHTML = "";
-
-    const nonEmpty = question.options.filter((r) => r.trim() !== "");
-    const preview = nonEmpty.slice(0, 5);
-
-    if (preview.length === 0) {
-      const li = document.createElement("li");
-      li.textContent = "(no responses recorded)";
-      previewList.appendChild(li);
-    } else {
-      preview.forEach(function (response) {
-        const li = document.createElement("li");
-        li.textContent = response;
-        previewList.appendChild(li);
-      });
-    }
-
-    // Pre-select the detected/saved type and clear old status.
-    document.getElementById("typeSelect").value = question.type || "";
-    document.getElementById("saveStatus").textContent = "";
-
-    document.getElementById("question-detail").style.display = "block";
-
-    // If a type is already set, render stats immediately without requiring
-    // the user to manually re-select it.
-    document.getElementById("typeSelect").dispatchEvent(new Event("change"));
-  });
-
-// --- TYPE SELECTION HANDLER ---
-// Recalculates and displays stats whenever the user changes the type dropdown.
-document.getElementById("typeSelect").addEventListener("change", function () {
-  const type = this.value;
-  const question = document.getElementById("questionSelect").value;
-
+function generateGraph(){
+  const type = document.getElementById("typeSelect").value;
+  const question = current_question;
+  
   if (!type || !question) {
     document.getElementById("stats-section").style.display = "none";
     if (activeChart) {
@@ -275,13 +276,19 @@ document.getElementById("typeSelect").addEventListener("change", function () {
   }
 
   document.getElementById("stats-section").style.display = "block";
+}
+
+
+document.getElementById("typeSelect").addEventListener("change", function () {
+  // Recalculates and displays stats whenever the user changes the type dropdown.
+  generateGraph();
 });
 
 
 
-// --- SAVE TYPE HANDLER ---
+// ------------------------ SAVE TYPE HANDLER ----------------------------------------------------------
 document.getElementById("saveTypeBtn").addEventListener("click", function () {
-  const question = document.getElementById("questionSelect").value;
+  const question = current_question;
   const type = document.getElementById("typeSelect").value;
 
   if (!type) {
@@ -311,9 +318,9 @@ document.getElementById("saveTypeBtn").addEventListener("click", function () {
     });
 });
 
-// Calculate Standard Deviation
+// ------------------------------CALCULATE STANDARD DEVIATION------------------------------------------------
 function getStandardDeviation (array) {
-  const n = array.length
-  const mean = array.reduce((a, b) => a + b) / n
-  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+  const n = array.length;
+  const mean = array.reduce((a, b) => a + b) / n;
+  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n);
 }

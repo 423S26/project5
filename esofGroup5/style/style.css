@@ -73,12 +73,14 @@ input{
 /* Single Box */
 .question_box{
     background-color: rgb(173, 173, 173);
-    border: 5px solid black;
+    
     width: 200px;
-    padding: 20px;
+    padding: 15px;
+    margin: 20px;
     box-sizing: border-box;
     text-align: center;
-
+    border-radius: 15px;
+    box-shadow: 2px 2px 15px black;
 }
 
 .question_box:hover{
@@ -90,6 +92,13 @@ input{
     color: aliceblue !important;
     border-radius: 15px;
 }
+
+.text_input{
+    margin: 20px;
+    border-radius: 20px;
+}
+
+
 
 
 .navigation{

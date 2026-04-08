@@ -330,6 +330,17 @@ document.getElementById("saveTypeBtn").addEventListener("click", function () {
     });
 });
 
+var download_link = document.getElementById("chart_download");
+download_link.addEventListener("click", function(){
+  // alert(current_question);
+  download_link.setAttribute("download", `${current_question}.png`);
+  const canvas = document.getElementById("stats-chart");
+  var image = canvas.toDataURL("image/png").replace("image/png","imageoctet-stream");
+
+  download_link.setAttribute("href", image);
+});
+
+
 // Calculate Standard Deviation
 function getStandardDeviation(array) {
   const n = array.length;

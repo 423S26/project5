@@ -56,6 +56,14 @@ input{
 
 }
 
+.download_button{
+    background-color: rgb(26, 85, 173);
+    color: white;
+    margin: auto;
+    border-radius: 10px;
+    padding: 5px;
+}
+
 .navigation li :hover {
     background-color: rebeccapurple;
     color: aliceblue;

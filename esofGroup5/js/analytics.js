@@ -63,7 +63,7 @@ function fillQuestionBoxes(data) {
     const child_box = document.createElement("div");
     child_box.classList.add("question_box");
     child_box.textContent = q;
-    child_box.addEventListener("click", function(){update_question(data, q)});
+    child_box.addEventListener("click", function(){update_question(data, q);});
     parent_container.append(child_box);
   });
 }
@@ -127,42 +127,62 @@ function update_question(data,q){
 
 // ------------QUESTION SEARCH---------------------------------------------------------
 document.getElementById("question_search").addEventListener('input', function(){
+  filter();
+  // const val = document.getElementById("question_search").value.toLowerCase();
 
-  const val = document.getElementById("question_search").value.toLowerCase();
-  
 
-    const keys = Object.keys(questionsData);
+  //   const new_data = Object.fromEntries(
+  //     Object.entries(questionsData).filter(([key, value]) => {
+  //       return key.toLowerCase().includes(val);
+  //     }),
+  //   );
 
-    const new_data = Object.fromEntries(
-      Object.entries(questionsData).filter(([key, value]) => {
-        return key.toLowerCase().includes(val);
-      }),
-    );
-
-    fillQuestionBoxes(new_data);
+  //   fillQuestionBoxes(new_data);
   });
-
-
-
 // ------------SELECT BY QUESTION TYPE--------------------------------------------
 
 document.getElementById("sort_by_category").addEventListener('change', function(){
+  filter();
+  // const type_search = document.getElementById("sort_by_category").value.toLowerCase();
+  // const search_val = document.getElementById("question_search").value.toLowerCase();
 
+  // if(type_search != 'none'){
+  //   const keys = Object.keys(questionsData);
+  //   const new_data = Object.fromEntries(
+  //     Object.entries(questionsData).filter(([key, value]) => {
+  //       return (questionsData[key].type == type_search) && (key.toLowerCase().includes(search_val));
+  //     })
+  //   );
+  //   fillQuestionBoxes(new_data);
+  // }else{
+  //   fillQuestionBoxes(questionsData);
+  // }
+  
+});
+
+function filter(){
   const type_search = document.getElementById("sort_by_category").value.toLowerCase();
+  const search_val = document.getElementById("question_search").value.toLowerCase();
+
   if(type_search != 'none'){
-    const keys = Object.keys(questionsData);
-    const values= JSON.stringify(Object.values(questionsData));
+    // Filter by category AND search
     const new_data = Object.fromEntries(
-      Object.entries(questionsData).filter(([key, value]) => {
-        return questionsData[key].type == type_search;
+      Object.entries(questionsData).filter(([key]) => {
+        return (questionsData[key].type == type_search) && (key.toLowerCase().includes(search_val));
       })
     );
     fillQuestionBoxes(new_data);
   }else{
-    fillQuestionBoxes(questionsData);
+    // Filter only by search
+    const new_data = Object.fromEntries(
+      Object.entries(questionsData).filter(([key]) => {
+        return (key.toLowerCase().includes(search_val));
+      })
+    );
+    fillQuestionBoxes(new_data);
   }
-  
-});
+}
+
 
 // ---- GENERATE GRAPH--------------------------------------------------------
 

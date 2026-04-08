@@ -54,18 +54,14 @@ fetch("/questions")
     // No questions yet (no CSV uploaded) - silently do nothing.
   });
 
-
-
-
 //------------QUESTION BOXES VISUALISZATION-------------------------
-function fillQuestionBoxes(data){
-
+function fillQuestionBoxes(data) {
   const parent_container = document.getElementById("question_boxes");
   parent_container.innerHTML = "";
   Object.keys(data).forEach(function (q) {
     // For each data entry q (Question Name)
-    const child_box = document.createElement('div');
-    child_box.classList.add('question_box');
+    const child_box = document.createElement("div");
+    child_box.classList.add("question_box");
     child_box.textContent = q;
     child_box.addEventListener("click", function(){update_question(data, q)});
     parent_container.append(child_box);
@@ -123,12 +119,11 @@ function update_question(data,q){
   const section = document.getElementById("question-detail");
 
   section.scrollIntoView({
-    behavior : 'smooth',
-    block: 'start'
+    behavior: "smooth",
+    block: "start",
   });
   // generateGraph(q);
 }
-
 
 // ------------QUESTION SEARCH---------------------------------------------------------
 document.getElementById("question_search").addEventListener('input', function(){
@@ -136,17 +131,16 @@ document.getElementById("question_search").addEventListener('input', function(){
   const val = document.getElementById("question_search").value.toLowerCase();
   
 
-  const keys = Object.keys(questionsData);
-  
-  const new_data = Object.fromEntries(
-    Object.entries(questionsData).filter(([key, value]) => {
-      return key.toLowerCase().includes(val);
-    })
-  );
-  
-  fillQuestionBoxes(new_data);
-});
+    const keys = Object.keys(questionsData);
 
+    const new_data = Object.fromEntries(
+      Object.entries(questionsData).filter(([key, value]) => {
+        return key.toLowerCase().includes(val);
+      }),
+    );
+
+    fillQuestionBoxes(new_data);
+  });
 
 
 
@@ -217,7 +211,7 @@ function generateGraph(){
       const freq = {};
       numbers.forEach((n) => (freq[n] = (freq[n] || 0) + 1));
       const mode = Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
-      const standard_deviation = getStandardDeviation(numbers)
+      const standard_deviation = getStandardDeviation(numbers);
 
       statsOutput.innerHTML =
         `<p>Responses counted: ${numbers.length}</p>` +
@@ -284,9 +278,7 @@ document.getElementById("typeSelect").addEventListener("change", function () {
   generateGraph();
 });
 
-
-
-// ------------------------ SAVE TYPE HANDLER ----------------------------------------------------------
+// --- SAVE TYPE HANDLER ---
 document.getElementById("saveTypeBtn").addEventListener("click", function () {
   const question = current_question;
   const type = document.getElementById("typeSelect").value;
@@ -318,9 +310,11 @@ document.getElementById("saveTypeBtn").addEventListener("click", function () {
     });
 });
 
-// ------------------------------CALCULATE STANDARD DEVIATION------------------------------------------------
-function getStandardDeviation (array) {
+// Calculate Standard Deviation
+function getStandardDeviation(array) {
   const n = array.length;
   const mean = array.reduce((a, b) => a + b) / n;
-  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n);
+  return Math.sqrt(
+    array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n,
+  );
 }

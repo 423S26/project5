@@ -1,4 +1,5 @@
-/* global Chart */
+/* global Chart, ChartDataLabels */
+Chart.register(ChartDataLabels);
 
 // Holds the full questions data (including options) after load.
 // Keyed by question text, same structure as Flask's /questions response.
@@ -9,13 +10,15 @@ let activeChart = null;
 
 let current_question = "";
 
-function renderChart(type, labels, values) {
+function renderChart(type, labels, values, title) {
   const canvas = document.getElementById("stats-chart");
   if (activeChart) {
     activeChart.destroy();
     activeChart = null;
   }
   const isBar = type === "bar";
+  const total = values.reduce((a, b) => a + b, 0);
+
   activeChart = new Chart(canvas, {
     type: isBar ? "bar" : "pie",
     data: {
@@ -37,8 +40,38 @@ function renderChart(type, labels, values) {
       ],
     },
     options: {
-      plugins: { legend: { display: !isBar } },
-      scales: isBar ? { y: { beginAtZero: true, ticks: { stepSize: 1 } } } : {},
+      plugins: {
+        legend: { display: !isBar },
+        title: {
+          display: true,
+          text: title,
+        },
+        datalabels: isBar
+          ? {
+              anchor: "end",
+              align: "end",
+              formatter: (value) => value,
+              color: "#333",
+            }
+          : {
+              formatter: (value) =>
+                `${((value / total) * 100).toFixed(1)}%`,
+              color: "#fff",
+            },
+      },
+      scales: isBar
+        ? {
+            x: {
+              title: { display: true, text: "Response Value" },
+              ticks: { stepSize: 1 },
+            },
+            y: {
+              title: { display: true, text: "Count" },
+              beginAtZero: true,
+              ticks: { stepSize: 1 },
+            },
+          }
+        : {},
     },
   });
 }
@@ -257,6 +290,7 @@ function generateGraph() {
         "bar",
         chartEntries.map((e) => e[0]),
         chartEntries.map((e) => e[1]),
+        current_question,
       );
     }
   } else if (type === "multiple_choice" || type === "yes_no") {
@@ -283,6 +317,7 @@ function generateGraph() {
       "pie",
       sorted.map((e) => e[0]),
       sorted.map((e) => e[1]),
+      current_question,
     );
   } else if (type === "short_answer") {
     // Free text — can't do numeric stats, just show the response count.

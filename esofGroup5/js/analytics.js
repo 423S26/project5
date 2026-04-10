@@ -63,13 +63,15 @@ function fillQuestionBoxes(data) {
     const child_box = document.createElement("div");
     child_box.classList.add("question_box");
     child_box.textContent = q;
-    child_box.addEventListener("click", function(){update_question(data, q);});
+    child_box.addEventListener("click", function () {
+      update_question(data, q);
+    });
     parent_container.append(child_box);
   });
 }
 
 // ------------UPDATE QUESTION--------------------------------------------
-function update_question(data,q){
+function update_question(data, q) {
   // if (!selected) {
   //   document.getElementById("question-detail").style.display = "none";
   //   return;
@@ -86,7 +88,7 @@ function update_question(data,q){
   previewList.innerHTML = "";
 
   const nonEmpty = question.options.filter((r) => r.trim() !== "");
-  const preview = nonEmpty.slice(0, 5); 
+  const preview = nonEmpty.slice(0, 5);
 
   if (preview.length === 0) {
     const li = document.createElement("li");
@@ -98,8 +100,6 @@ function update_question(data,q){
       li.textContent = response;
       previewList.appendChild(li);
     });
-    
-    
   }
 
   // Pre-select the detected/saved type and clear old status.
@@ -113,7 +113,6 @@ function update_question(data,q){
   document.getElementById("typeSelect").dispatchEvent(new Event("change"));
 
   // Trigger Change to update information
-  
 
   // Window Scroll To section
   const section = document.getElementById("question-detail");
@@ -126,70 +125,78 @@ function update_question(data,q){
 }
 
 // ------------QUESTION SEARCH---------------------------------------------------------
-document.getElementById("question_search").addEventListener('input', function(){
-  filter();
-  // const val = document.getElementById("question_search").value.toLowerCase();
+document
+  .getElementById("question_search")
+  .addEventListener("input", function () {
+    filter();
+    // const val = document.getElementById("question_search").value.toLowerCase();
 
+    //   const new_data = Object.fromEntries(
+    //     Object.entries(questionsData).filter(([key, value]) => {
+    //       return key.toLowerCase().includes(val);
+    //     }),
+    //   );
 
-  //   const new_data = Object.fromEntries(
-  //     Object.entries(questionsData).filter(([key, value]) => {
-  //       return key.toLowerCase().includes(val);
-  //     }),
-  //   );
-
-  //   fillQuestionBoxes(new_data);
+    //   fillQuestionBoxes(new_data);
   });
 // ------------SELECT BY QUESTION TYPE--------------------------------------------
 
-document.getElementById("sort_by_category").addEventListener('change', function(){
-  filter();
-  // const type_search = document.getElementById("sort_by_category").value.toLowerCase();
-  // const search_val = document.getElementById("question_search").value.toLowerCase();
+document
+  .getElementById("sort_by_category")
+  .addEventListener("change", function () {
+    filter();
+    // const type_search = document.getElementById("sort_by_category").value.toLowerCase();
+    // const search_val = document.getElementById("question_search").value.toLowerCase();
 
-  // if(type_search != 'none'){
-  //   const keys = Object.keys(questionsData);
-  //   const new_data = Object.fromEntries(
-  //     Object.entries(questionsData).filter(([key, value]) => {
-  //       return (questionsData[key].type == type_search) && (key.toLowerCase().includes(search_val));
-  //     })
-  //   );
-  //   fillQuestionBoxes(new_data);
-  // }else{
-  //   fillQuestionBoxes(questionsData);
-  // }
-  
-});
+    // if(type_search != 'none'){
+    //   const keys = Object.keys(questionsData);
+    //   const new_data = Object.fromEntries(
+    //     Object.entries(questionsData).filter(([key, value]) => {
+    //       return (questionsData[key].type == type_search) && (key.toLowerCase().includes(search_val));
+    //     })
+    //   );
+    //   fillQuestionBoxes(new_data);
+    // }else{
+    //   fillQuestionBoxes(questionsData);
+    // }
+  });
 
-function filter(){
-  const type_search = document.getElementById("sort_by_category").value.toLowerCase();
-  const search_val = document.getElementById("question_search").value.toLowerCase();
+function filter() {
+  const type_search = document
+    .getElementById("sort_by_category")
+    .value.toLowerCase();
+  const search_val = document
+    .getElementById("question_search")
+    .value.toLowerCase();
 
-  if(type_search != 'none'){
+  if (type_search !== "none") {
     // Filter by category AND search
     const new_data = Object.fromEntries(
       Object.entries(questionsData).filter(([key]) => {
-        return (questionsData[key].type == type_search) && (key.toLowerCase().includes(search_val));
-      })
+        return (
+          questionsData[key].type === type_search &&
+          key.toLowerCase().includes(search_val)
+        );
+      }),
     );
     fillQuestionBoxes(new_data);
-  }else{
+  } else {
     // Filter only by search
     const new_data = Object.fromEntries(
       Object.entries(questionsData).filter(([key]) => {
-        return (key.toLowerCase().includes(search_val));
-      })
+        return key.toLowerCase().includes(search_val);
+      }),
     );
     fillQuestionBoxes(new_data);
   }
 }
 
-
 // ---- GENERATE GRAPH--------------------------------------------------------
 
-function generateGraph(){
+function generateGraph() {
   const type = document.getElementById("typeSelect").value;
   const question = current_question;
-  
+
   if (!type || !question) {
     document.getElementById("stats-section").style.display = "none";
     if (activeChart) {
@@ -292,7 +299,6 @@ function generateGraph(){
   document.getElementById("stats-section").style.display = "block";
 }
 
-
 document.getElementById("typeSelect").addEventListener("change", function () {
   // Recalculates and displays stats whenever the user changes the type dropdown.
   generateGraph();
@@ -331,15 +337,16 @@ document.getElementById("saveTypeBtn").addEventListener("click", function () {
 });
 
 var download_link = document.getElementById("chart_download");
-download_link.addEventListener("click", function(){
+download_link.addEventListener("click", function () {
   // alert(current_question);
   download_link.setAttribute("download", `${current_question}.png`);
   const canvas = document.getElementById("stats-chart");
-  var image = canvas.toDataURL("image/png").replace("image/png","imageoctet-stream");
+  var image = canvas
+    .toDataURL("image/png")
+    .replace("image/png", "imageoctet-stream");
 
   download_link.setAttribute("href", image);
 });
-
 
 // Calculate Standard Deviation
 function getStandardDeviation(array) {

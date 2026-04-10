@@ -14,26 +14,44 @@
     </ul>
 
     <h2>Dashboard Home</h2>
-
-    <h3>Purpose</h3>
-    <p>
-      The Survey Analytics Dashboard helps the Empowerment Center analyze alumni exit 
-      survey data from Qualtrics exports. The tool generates visualizations and statistics 
-      that can be used in funding proposals and presentations, eliminating the need for manual 
-      data analysis in Excel.
-    </p>
-    <h3>Instructions</h3>
-    <p>
-      In the "Responses" page, select a data file to upload. Make sure the file is in
-      a CVS format (Comma Seperated Value). 
-    </p>
-    <p>Once the file has been loaded (Indicated by the "CVS Loaded" text), go to the "Analytics" page.
-      Questions can be selected in the dropdown prompt
-    </p>
-    <p>The program will then automatically detect  the question type (i.e. multi-select, Likert scale, Ranking, Short Answer, and Yes or No).
-       If the program detects the question type incorrectly, it can be 
-       manually selected using the "Question Type" input. 
-    </p>
-    <p>Once the question type is determined, a graph will be generated from the answers. </p>
+    <div class="display_box">
+      <h3>Purpose</h3>
+      <p>
+        The Survey Analytics Dashboard helps the Empowerment Center analyze
+        alumni exit survey data from Qualtrics exports. The tool generates
+        visualizations and statistics that can be used in funding proposals and
+        presentations, eliminating the need for manual data analysis in Excel.
+      </p>
+    </div>
+    <div class="display_box">
+      <h3>Instructions</h3>
+      <p>
+        In the "Responses" page, select a data file to upload. Make sure the
+        file is in a CVS format (Comma Seperated Value). Once the file has been
+        loaded (Indicated by the "CVS Loaded" text), go to the "Analytics" page
+        for further analysis of a specific question.
+      </p>
+      <p>
+        To select a specific question for analysis, click on the box containing
+        said question. You can also filter questions using the search bar or by
+        using the dropdown menu to select a specific type of question (i.e.
+        Multiple Choice, Likert Scale, Ranking, Short Answer, Yes or No)
+      </p>
+      <p>
+        Once a question has been selected, the page will scroll down to the
+        analytics of that specifc question. It will have a preview of the top 5
+        responses, and a manual Question Type Selector, in case the algorithm
+        was wrong about the question type. To change the type, use the dropdown
+        menu to select a new type, and click on the "Save Type" Button.
+      </p>
+      <p>
+        In the "Statistics" section, the application will give the number of
+        counted responses, as well as a mean, median, mode, and standard
+        deviation, if they are applicable to the question type. The application
+        will also generate a graph (if applicable) based on the recorded
+        responses. To download the graph, click on the "Download Graph" button,
+        just below the graph.
+      </p>
+    </div>
   </body>
 </html>

@@ -28,7 +28,7 @@ input{
 .display_box{
     background-color: rgb(202, 202, 202);
     padding: 30px;
-    border-radius: 5px;
+    border-radius: 15px;
     margin: 60px;
 
 }
@@ -56,6 +56,14 @@ input{
 
 }
 
+.download_button{
+    background-color: rgb(26, 85, 173);
+    color: white;
+    margin: auto;
+    border-radius: 10px;
+    padding: 5px;
+}
+
 .navigation li :hover {
     background-color: rebeccapurple;
     color: aliceblue;
@@ -63,11 +71,42 @@ input{
 
 }
 
+/* Container of Boxes */
+.question_boxes{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+}
+
+/* Single Box */
+.question_box{
+    background-color: rgb(173, 173, 173);
+    
+    width: 200px;
+    padding: 15px;
+    margin: 20px;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 2px 2px 15px black;
+}
+
+.question_box:hover{
+    background-color: rgb(133, 133, 133);
+}
+
 .highlighted {
     background-color: rebeccapurple;
     color: aliceblue !important;
     border-radius: 15px;
 }
+
+.text_input{
+    margin: 20px;
+    border-radius: 20px;
+}
+
+
 
 
 .navigation{

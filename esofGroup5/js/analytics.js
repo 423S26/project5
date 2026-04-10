@@ -7,6 +7,8 @@ let questionsData = {};
 // Tracks the current Chart.js instance so we can destroy it before re-rendering.
 let activeChart = null;
 
+let current_question = "";
+
 function renderChart(type, labels, values) {
   const canvas = document.getElementById("stats-chart");
   if (activeChart) {
@@ -46,77 +48,154 @@ fetch("/questions")
   .then((res) => res.json())
   .then((data) => {
     questionsData = data;
-    populateQuestionDropdown(data);
+    fillQuestionBoxes(data);
   })
   .catch(() => {
     // No questions yet (no CSV uploaded) - silently do nothing.
   });
 
-// Fills the question <select> with one <option> per question.
-function populateQuestionDropdown(data) {
-  const select = document.getElementById("questionSelect");
-  select.innerHTML = '<option value="">-- Choose a question --</option>';
-
+//------------QUESTION BOXES VISUALISZATION-------------------------
+function fillQuestionBoxes(data) {
+  const parent_container = document.getElementById("question_boxes");
+  parent_container.innerHTML = "";
   Object.keys(data).forEach(function (q) {
-    const option = document.createElement("option");
-    option.value = q;
-    // Truncate long question text so the dropdown stays readable.
-    option.textContent = q.length > 80 ? q.substring(0, 80) + "..." : q;
-    select.appendChild(option);
+    // For each data entry q (Question Name)
+    const child_box = document.createElement("div");
+    child_box.classList.add("question_box");
+    child_box.textContent = q;
+    child_box.addEventListener("click", function () {
+      update_question(data, q);
+    });
+    parent_container.append(child_box);
   });
 }
 
-// --- QUESTION SELECTION HANDLER ---
-document
-  .getElementById("questionSelect")
-  .addEventListener("change", function () {
-    const selected = this.value;
+// ------------UPDATE QUESTION--------------------------------------------
+function update_question(data, q) {
+  // if (!selected) {
+  //   document.getElementById("question-detail").style.display = "none";
+  //   return;
+  // }
 
-    if (!selected) {
-      document.getElementById("question-detail").style.display = "none";
-      return;
-    }
+  const question = questionsData[q];
+  current_question = q;
 
-    const question = questionsData[selected];
+  // Show the full question text as a heading.
+  document.getElementById("question-heading").textContent = q;
 
-    // Show the full question text as a heading.
-    document.getElementById("question-heading").textContent = selected;
+  // Show up to 5 non-empty responses as a preview.
+  const previewList = document.getElementById("response-preview");
+  previewList.innerHTML = "";
 
-    // Show up to 5 non-empty responses as a preview.
-    const previewList = document.getElementById("response-preview");
-    previewList.innerHTML = "";
+  const nonEmpty = question.options.filter((r) => r.trim() !== "");
+  const preview = nonEmpty.slice(0, 5);
 
-    const nonEmpty = question.options.filter((r) => r.trim() !== "");
-    const preview = nonEmpty.slice(0, 5);
-
-    if (preview.length === 0) {
+  if (preview.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "(no responses recorded)";
+    previewList.appendChild(li);
+  } else {
+    preview.forEach(function (response) {
       const li = document.createElement("li");
-      li.textContent = "(no responses recorded)";
+      li.textContent = response;
       previewList.appendChild(li);
-    } else {
-      preview.forEach(function (response) {
-        const li = document.createElement("li");
-        li.textContent = response;
-        previewList.appendChild(li);
-      });
-    }
+    });
+  }
 
-    // Pre-select the detected/saved type and clear old status.
-    document.getElementById("typeSelect").value = question.type || "";
-    document.getElementById("saveStatus").textContent = "";
+  // Pre-select the detected/saved type and clear old status.
+  document.getElementById("typeSelect").value = question.type || "";
+  document.getElementById("saveStatus").textContent = "";
 
-    document.getElementById("question-detail").style.display = "block";
+  document.getElementById("question-detail").style.display = "block";
 
-    // If a type is already set, render stats immediately without requiring
-    // the user to manually re-select it.
-    document.getElementById("typeSelect").dispatchEvent(new Event("change"));
+  // If a type is already set, render stats immediately without requiring
+  // the user to manually re-select it.
+  document.getElementById("typeSelect").dispatchEvent(new Event("change"));
+
+  // Trigger Change to update information
+
+  // Window Scroll To section
+  const section = document.getElementById("question-detail");
+
+  section.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+  // generateGraph(q);
+}
+
+// ------------QUESTION SEARCH---------------------------------------------------------
+document
+  .getElementById("question_search")
+  .addEventListener("input", function () {
+    filter();
+    // const val = document.getElementById("question_search").value.toLowerCase();
+
+    //   const new_data = Object.fromEntries(
+    //     Object.entries(questionsData).filter(([key, value]) => {
+    //       return key.toLowerCase().includes(val);
+    //     }),
+    //   );
+
+    //   fillQuestionBoxes(new_data);
+  });
+// ------------SELECT BY QUESTION TYPE--------------------------------------------
+
+document
+  .getElementById("sort_by_category")
+  .addEventListener("change", function () {
+    filter();
+    // const type_search = document.getElementById("sort_by_category").value.toLowerCase();
+    // const search_val = document.getElementById("question_search").value.toLowerCase();
+
+    // if(type_search != 'none'){
+    //   const keys = Object.keys(questionsData);
+    //   const new_data = Object.fromEntries(
+    //     Object.entries(questionsData).filter(([key, value]) => {
+    //       return (questionsData[key].type == type_search) && (key.toLowerCase().includes(search_val));
+    //     })
+    //   );
+    //   fillQuestionBoxes(new_data);
+    // }else{
+    //   fillQuestionBoxes(questionsData);
+    // }
   });
 
-// --- TYPE SELECTION HANDLER ---
-// Recalculates and displays stats whenever the user changes the type dropdown.
-document.getElementById("typeSelect").addEventListener("change", function () {
-  const type = this.value;
-  const question = document.getElementById("questionSelect").value;
+function filter() {
+  const type_search = document
+    .getElementById("sort_by_category")
+    .value.toLowerCase();
+  const search_val = document
+    .getElementById("question_search")
+    .value.toLowerCase();
+
+  if (type_search !== "none") {
+    // Filter by category AND search
+    const new_data = Object.fromEntries(
+      Object.entries(questionsData).filter(([key]) => {
+        return (
+          questionsData[key].type === type_search &&
+          key.toLowerCase().includes(search_val)
+        );
+      }),
+    );
+    fillQuestionBoxes(new_data);
+  } else {
+    // Filter only by search
+    const new_data = Object.fromEntries(
+      Object.entries(questionsData).filter(([key]) => {
+        return key.toLowerCase().includes(search_val);
+      }),
+    );
+    fillQuestionBoxes(new_data);
+  }
+}
+
+// ---- GENERATE GRAPH--------------------------------------------------------
+
+function generateGraph() {
+  const type = document.getElementById("typeSelect").value;
+  const question = current_question;
 
   if (!type || !question) {
     document.getElementById("stats-section").style.display = "none";
@@ -159,7 +238,7 @@ document.getElementById("typeSelect").addEventListener("change", function () {
       const freq = {};
       numbers.forEach((n) => (freq[n] = (freq[n] || 0) + 1));
       const mode = Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
-      const standard_deviation = getStandardDeviation(numbers)
+      const standard_deviation = getStandardDeviation(numbers);
 
       statsOutput.innerHTML =
         `<p>Responses counted: ${numbers.length}</p>` +
@@ -218,11 +297,16 @@ document.getElementById("typeSelect").addEventListener("change", function () {
   }
 
   document.getElementById("stats-section").style.display = "block";
+}
+
+document.getElementById("typeSelect").addEventListener("change", function () {
+  // Recalculates and displays stats whenever the user changes the type dropdown.
+  generateGraph();
 });
 
 // --- SAVE TYPE HANDLER ---
 document.getElementById("saveTypeBtn").addEventListener("click", function () {
-  const question = document.getElementById("questionSelect").value;
+  const question = current_question;
   const type = document.getElementById("typeSelect").value;
 
   if (!type) {
@@ -252,9 +336,23 @@ document.getElementById("saveTypeBtn").addEventListener("click", function () {
     });
 });
 
+var download_link = document.getElementById("chart_download");
+download_link.addEventListener("click", function () {
+  // alert(current_question);
+  download_link.setAttribute("download", `${current_question}.png`);
+  const canvas = document.getElementById("stats-chart");
+  var image = canvas
+    .toDataURL("image/png")
+    .replace("image/png", "imageoctet-stream");
+
+  download_link.setAttribute("href", image);
+});
+
 // Calculate Standard Deviation
-function getStandardDeviation (array) {
-  const n = array.length
-  const mean = array.reduce((a, b) => a + b) / n
-  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+function getStandardDeviation(array) {
+  const n = array.length;
+  const mean = array.reduce((a, b) => a + b) / n;
+  return Math.sqrt(
+    array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n,
+  );
 }

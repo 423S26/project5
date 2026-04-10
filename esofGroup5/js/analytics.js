@@ -54,8 +54,7 @@ function renderChart(type, labels, values, title) {
               color: "#333",
             }
           : {
-              formatter: (value) =>
-                `${((value / total) * 100).toFixed(1)}%`,
+              formatter: (value) => `${((value / total) * 100).toFixed(1)}%`,
               color: "#fff",
             },
       },

@@ -44,9 +44,13 @@ function renderChart(type, labels, values, title) {
         legend: { display: !isBar },
         title: {
           display: true,
-          text: title,
-        },
-        datalabels: isBar
+          text: wrapTitle(title, 50),
+          align: 'center',
+          font: { size: 18},
+          padding: {bottom: 20}
+
+        }
+        ,datalabels: isBar
           ? {
               anchor: "end",
               align: "end",
@@ -102,6 +106,24 @@ function fillQuestionBoxes(data) {
   });
 }
 
+
+function wrapTitle(text, maxLength){
+  const words = text.split(' ');
+    let lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+        if (currentLine.length + words[i].length + 1 <= maxLength) {
+            currentLine += " " + words[i];
+        } else {
+            lines.push(currentLine);
+            currentLine = words[i];
+        }
+    }
+    lines.push(currentLine);
+    return lines;
+}
+
 // ------------UPDATE QUESTION--------------------------------------------
 function update_question(data, q) {
   // if (!selected) {
@@ -132,6 +154,7 @@ function update_question(data, q) {
       li.textContent = response;
       previewList.appendChild(li);
     });
+    generateGraph();
   }
 
   // Pre-select the detected/saved type and clear old status.
@@ -161,15 +184,6 @@ document
   .getElementById("question_search")
   .addEventListener("input", function () {
     filter();
-    // const val = document.getElementById("question_search").value.toLowerCase();
-
-    //   const new_data = Object.fromEntries(
-    //     Object.entries(questionsData).filter(([key, value]) => {
-    //       return key.toLowerCase().includes(val);
-    //     }),
-    //   );
-
-    //   fillQuestionBoxes(new_data);
   });
 // ------------SELECT BY QUESTION TYPE--------------------------------------------
 
@@ -177,20 +191,6 @@ document
   .getElementById("sort_by_category")
   .addEventListener("change", function () {
     filter();
-    // const type_search = document.getElementById("sort_by_category").value.toLowerCase();
-    // const search_val = document.getElementById("question_search").value.toLowerCase();
-
-    // if(type_search != 'none'){
-    //   const keys = Object.keys(questionsData);
-    //   const new_data = Object.fromEntries(
-    //     Object.entries(questionsData).filter(([key, value]) => {
-    //       return (questionsData[key].type == type_search) && (key.toLowerCase().includes(search_val));
-    //     })
-    //   );
-    //   fillQuestionBoxes(new_data);
-    // }else{
-    //   fillQuestionBoxes(questionsData);
-    // }
   });
 
 function filter() {
@@ -228,6 +228,9 @@ function filter() {
 function generateGraph() {
   const type = document.getElementById("typeSelect").value;
   const question = current_question;
+  
+  // Show Download button
+  document.getElementById('chart_download').style.display = "inline";
 
   if (!type || !question) {
     document.getElementById("stats-section").style.display = "none";
@@ -237,7 +240,6 @@ function generateGraph() {
     }
     return;
   }
-
   const responses = questionsData[question].options.filter(
     (r) => r.trim() !== "",
   );
@@ -323,11 +325,18 @@ function generateGraph() {
     statsOutput.innerHTML =
       `<p>Responses counted: ${responses.length}</p>` +
       "<p>Mean / median / mode are not applicable for short answer questions.</p>";
+    
+    
+    
+
     // Destroy any previous chart — nothing to graph for free text.
     if (activeChart) {
       activeChart.destroy();
       activeChart = null;
     }
+
+    // If Short answwer (no chart), hide download button
+    document.getElementById('chart_download').style.display = "none";
   }
 
   document.getElementById("stats-section").style.display = "block";
@@ -337,6 +346,10 @@ document.getElementById("typeSelect").addEventListener("change", function () {
   // Recalculates and displays stats whenever the user changes the type dropdown.
   generateGraph();
 });
+
+
+
+
 
 // --- SAVE TYPE HANDLER ---
 document.getElementById("saveTypeBtn").addEventListener("click", function () {

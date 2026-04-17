@@ -124,38 +124,25 @@ function wrapTitle(text, maxLength){
     return lines;
 }
 
+var expanded = false;
+
 // ------------UPDATE QUESTION--------------------------------------------
 function update_question(data, q) {
   // if (!selected) {
   //   document.getElementById("question-detail").style.display = "none";
   //   return;
   // }
-
-  const question = questionsData[q];
+  
   current_question = q;
+  const question = questionsData[current_question];
+  expanded = false;
 
   // Show the full question text as a heading.
   document.getElementById("question-heading").textContent = q;
 
-  // Show up to 5 non-empty responses as a preview.
-  const previewList = document.getElementById("response-preview");
-  previewList.innerHTML = "";
-
-  const nonEmpty = question.options.filter((r) => r.trim() !== "");
-  const preview = nonEmpty.slice(0, 5);
-
-  if (preview.length === 0) {
-    const li = document.createElement("li");
-    li.textContent = "(no responses recorded)";
-    previewList.appendChild(li);
-  } else {
-    preview.forEach(function (response) {
-      const li = document.createElement("li");
-      li.textContent = response;
-      previewList.appendChild(li);
-    });
-    generateGraph();
-  }
+  listResponses(5, q);
+  
+  
 
   // Pre-select the detected/saved type and clear old status.
   document.getElementById("typeSelect").value = question.type || "";
@@ -165,9 +152,6 @@ function update_question(data, q) {
 
   // If a type is already set, render stats immediately without requiring
   // the user to manually re-select it.
-  document.getElementById("typeSelect").dispatchEvent(new Event("change"));
-
-  // Trigger Change to update information
 
   // Window Scroll To section
   const section = document.getElementById("question-detail");
@@ -176,20 +160,18 @@ function update_question(data, q) {
     behavior: "smooth",
     block: "start",
   });
-  // generateGraph(q);
-}
+  generateGraph();
 
+}
 // ------------QUESTION SEARCH---------------------------------------------------------
 document
   .getElementById("question_search")
   .addEventListener("input", function () {
     filter();
   });
-// ------------SELECT BY QUESTION TYPE--------------------------------------------
+// -------SELECT BY QUESTION TYPE--------------------------------------------
 
-document
-  .getElementById("sort_by_category")
-  .addEventListener("change", function () {
+document.getElementById("sort_by_category").addEventListener("change", function () {
     filter();
   });
 
@@ -222,6 +204,52 @@ function filter() {
     fillQuestionBoxes(new_data);
   }
 }
+
+// ----- EXPAND RESPONSES----------------------------------------------------
+
+const read_more_button = document.getElementById("read_more");
+read_more_button.addEventListener('click', function(){
+  if (expanded){
+    listResponses(5)
+    expanded = false;
+    read_more_button.textContent = "read more";
+  }else{
+    listResponses(-1)
+    expanded = true;
+    read_more_button.textContent = "read less";
+  }
+});
+
+function listResponses(num) {
+  // Show up to 5 non-empty responses as a preview.
+  const previewList = document.getElementById("response-preview");
+  previewList.innerHTML = "";
+  
+  var responses = questionsData[current_question].options.filter(
+    (r) => r.trim() !== "",
+  );
+  
+  if (num != -1){
+    responses = responses.slice(0, num);
+  }
+  
+
+  if (responses.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "(no responses recorded)";
+    previewList.appendChild(li);
+  } else {
+    responses.forEach(function (response) {
+      const li = document.createElement("li");
+      li.textContent = response;
+      previewList.appendChild(li);
+      });
+    
+    generateGraph();
+  }
+}
+
+
 
 // ---- GENERATE GRAPH--------------------------------------------------------
 

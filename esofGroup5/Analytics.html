@@ -47,11 +47,15 @@
         <h3 id="question-heading"></h3>
 
         <!-- Sample of real responses pulled from the CSV -->
-        <strong>Response Preview:</strong>
-        <ul id="response-preview"></ul>
+        <strong>Responses:</strong>
+        <ul id="response-preview" class="response_preview"></ul>
+
+        <span id="read_more" class="read_more">read more</span>
+        <hr>
+
 
         <!-- The user picks what kind of question this is -->
-        <label for="typeSelect">Question Type:</label>
+        <label for="typeSelect"><strong>Question Type</strong></label>
         <select id="typeSelect">
           <option value="">-- Select type --</option>
           <option value="multiple_choice">Multiple Choice</option>
@@ -60,15 +64,16 @@
           <option value="short_answer">Short Answer</option>
           <option value="yes_no">Yes / No</option>
         </select>
-
         <button id="saveTypeBtn">Save Type</button>
+
 
         <!-- Inline confirmation message after saving -->
         <span id="saveStatus"></span>
 
+        
         <!-- Stats section — shown as soon as a type is selected -->
         <div id="stats-section" style="display: none">
-          <hr />
+          <hr>
           <strong>Statistics:</strong>
           <div id="stats-output"></div>
           <canvas

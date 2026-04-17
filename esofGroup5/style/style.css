@@ -33,6 +33,14 @@ input{
 
 }
 
+.read_more{
+    color: rgb(77, 77, 77);
+    text-decoration: underline;
+}
+
+.response_preview li{
+    padding: 6px;
+}
 
 .navigation li a{
     text-decoration: none;

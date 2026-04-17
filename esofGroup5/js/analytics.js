@@ -45,12 +45,11 @@ function renderChart(type, labels, values, title) {
         title: {
           display: true,
           text: wrapTitle(title, 50),
-          align: 'center',
-          font: { size: 18},
-          padding: {bottom: 20}
-
-        }
-        ,datalabels: isBar
+          align: "center",
+          font: { size: 18 },
+          padding: { bottom: 20 },
+        },
+        datalabels: isBar
           ? {
               anchor: "end",
               align: "end",
@@ -106,22 +105,21 @@ function fillQuestionBoxes(data) {
   });
 }
 
+function wrapTitle(text, maxLength) {
+  const words = text.split(" ");
+  let lines = [];
+  let currentLine = words[0];
 
-function wrapTitle(text, maxLength){
-  const words = text.split(' ');
-    let lines = [];
-    let currentLine = words[0];
-
-    for (let i = 1; i < words.length; i++) {
-        if (currentLine.length + words[i].length + 1 <= maxLength) {
-            currentLine += " " + words[i];
-        } else {
-            lines.push(currentLine);
-            currentLine = words[i];
-        }
+  for (let i = 1; i < words.length; i++) {
+    if (currentLine.length + words[i].length + 1 <= maxLength) {
+      currentLine += " " + words[i];
+    } else {
+      lines.push(currentLine);
+      currentLine = words[i];
     }
-    lines.push(currentLine);
-    return lines;
+  }
+  lines.push(currentLine);
+  return lines;
 }
 
 // ------------UPDATE QUESTION--------------------------------------------
@@ -228,9 +226,9 @@ function filter() {
 function generateGraph() {
   const type = document.getElementById("typeSelect").value;
   const question = current_question;
-  
+
   // Show Download button
-  document.getElementById('chart_download').style.display = "inline";
+  document.getElementById("chart_download").style.display = "inline";
 
   if (!type || !question) {
     document.getElementById("stats-section").style.display = "none";
@@ -325,9 +323,6 @@ function generateGraph() {
     statsOutput.innerHTML =
       `<p>Responses counted: ${responses.length}</p>` +
       "<p>Mean / median / mode are not applicable for short answer questions.</p>";
-    
-    
-    
 
     // Destroy any previous chart — nothing to graph for free text.
     if (activeChart) {
@@ -336,7 +331,7 @@ function generateGraph() {
     }
 
     // If Short answwer (no chart), hide download button
-    document.getElementById('chart_download').style.display = "none";
+    document.getElementById("chart_download").style.display = "none";
   }
 
   document.getElementById("stats-section").style.display = "block";
@@ -346,10 +341,6 @@ document.getElementById("typeSelect").addEventListener("change", function () {
   // Recalculates and displays stats whenever the user changes the type dropdown.
   generateGraph();
 });
-
-
-
-
 
 // --- SAVE TYPE HANDLER ---
 document.getElementById("saveTypeBtn").addEventListener("click", function () {

@@ -343,12 +343,12 @@ function generateGraph() {
       current_question,
     );
   } else if (type === "short_answer") {
-    // Free text — can't do numeric stats, just show the response count.
+    // Free text - can't do numeric stats, just show the response count.
     statsOutput.innerHTML =
       `<p>Responses counted: ${responses.length}</p>` +
       "<p>Mean / median / mode are not applicable for short answer questions.</p>";
 
-    // Destroy any previous chart — nothing to graph for free text.
+    // Destroy any previous chart - nothing to graph for free text.
     if (activeChart) {
       activeChart.destroy();
       activeChart = null;

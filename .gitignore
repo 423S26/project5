@@ -1,1 +1,8 @@
-**/test.csv.DS_Store
+# macOS
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/

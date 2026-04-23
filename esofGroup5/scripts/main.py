@@ -110,7 +110,9 @@ def Upload():
 @app.route("/use-test-file", methods=["POST"])
 def use_test_file():
     global questions
-    test_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "coffee_test.csv")
+    test_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "coffee_test.csv"
+    )
     if not os.path.exists(test_path):
         return jsonify({"error": "Test file not found on server"}), 404
 

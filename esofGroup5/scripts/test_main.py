@@ -287,3 +287,69 @@ def test_detect_float_responses_not_ranking():
         ['3.5', '2.8', '3.9', '3.1']
     )
     assert result != 'ranking'
+
+
+# --- /upload EDGE CASE TESTS ---
+
+def test_upload_options_preflight(client):
+    """OPTIONS preflight request should return 204 with no body."""
+    response = client.options('/upload')
+    assert response.status_code == 204
+
+def test_upload_skips_empty_question_text(client):
+    """Columns whose row-2 question text is blank should be silently skipped."""
+    csv_with_blank = (
+        "QID1,QID2\n"
+        "Real Question,\n"
+        "Answer1,something\n"
+    )
+    data = {'file': (io.BytesIO(csv_with_blank.encode()), 'coffee_test.csv')}
+    client.post('/upload', data=data, content_type='multipart/form-data')
+    assert 'Real Question' in main.questions
+    assert '' not in main.questions
+
+def test_upload_replaces_previous_data(client):
+    """A second upload should overwrite questions from the first upload."""
+    upload_sample(client)
+    assert 'What is your student status?' in main.questions
+
+    second_csv = "QID1\nNew Question\nAnswer A\nAnswer B\n"
+    data = {'file': (io.BytesIO(second_csv.encode()), 'coffee_test.csv')}
+    client.post('/upload', data=data, content_type='multipart/form-data')
+
+    assert 'New Question' in main.questions
+    assert 'What is your student status?' not in main.questions
+
+
+# --- /use-test-file TESTS ---
+
+def test_use_test_file_returns_200(client):
+    """POST /use-test-file should return 200 and a list of questions."""
+    response = client.post('/use-test-file')
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body['message'] == 'Test file loaded'
+    assert isinstance(body['questions'], list)
+    assert len(body['questions']) > 0
+
+def test_use_test_file_populates_questions(client):
+    """After calling /use-test-file, /questions should return non-empty data."""
+    client.post('/use-test-file')
+    response = client.get('/questions')
+    body = response.get_json()
+    assert len(body) > 0
+
+def test_use_test_file_each_question_has_options_and_type(client):
+    """Every question loaded from the test file should have 'options' and 'type' keys."""
+    client.post('/use-test-file')
+    for q in main.questions.values():
+        assert 'options' in q
+        assert 'type' in q
+
+def test_use_test_file_replaces_previous_upload(client):
+    """Calling /use-test-file after an upload should overwrite the previous questions."""
+    upload_sample(client)
+    assert 'What is your student status?' in main.questions
+
+    client.post('/use-test-file')
+    assert 'What is your student status?' not in main.questions

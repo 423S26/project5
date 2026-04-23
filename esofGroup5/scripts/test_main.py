@@ -32,7 +32,7 @@ SAMPLE_CSV = (
 def upload_sample(client):
     """Helper that uploads SAMPLE_CSV and returns the response."""
     data = {
-        'file': (io.BytesIO(SAMPLE_CSV.encode()), 'test.csv')
+        'file': (io.BytesIO(SAMPLE_CSV.encode()), 'coffee_test.csv')
     }
     return client.post('/upload', data=data, content_type='multipart/form-data')
 
@@ -78,7 +78,7 @@ def test_upload_parses_responses_correctly(client):
 def test_upload_auto_detects_types(client):
     """After upload, auto-detection should set a type (not None) on questions with clear signals."""
     upload_sample(client)
-    # 'How satisfied were you? (1-5)' has numeric responses 3-5 — should detect as likert
+    # 'How satisfied were you? (1-5)' has numeric responses 3-5 - should detect as likert
     assert main.questions['How satisfied were you? (1-5)']['type'] == 'likert'
 
 
@@ -276,7 +276,7 @@ def test_detect_single_unique_response_not_multiple_choice():
         'Did you consent to participate?',
         ['I Agree', 'I Agree', 'I Agree', 'I Agree']
     )
-    # Only 1 unique value — doesn't meet len(non_empty) > len(unique) threshold meaningfully,
+    # Only 1 unique value - doesn't meet len(non_empty) > len(unique) threshold meaningfully,
     # but more importantly should not crash; result can be multiple_choice or short_answer.
     assert result is not None
 

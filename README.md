@@ -1,6 +1,6 @@
 # ESC Dashboard
 
-**Analytics Dashboard for the Empowerment Student Center**
+**Analytics Dashboard for the Empower Student Center**
 
 *A proposed solution to transform Qualtrics survey data into actionable visualizations and statistics.*
 
@@ -40,7 +40,7 @@ Open `esofGroup5/index.html` directly in your browser (File → Open, or drag it
 
 ### 4. Upload a CSV
 
-Click **Choose File**, select `esofGroup5/scripts/test.csv` (or any Qualtrics CSV export), then click **Upload File**.
+Click **Choose File**, select `esofGroup5/scripts/coffee_test.csv` (or any Qualtrics CSV export), then click **Upload File**.
 
 - A dropdown will appear with all survey questions.
 - Select a question to see a preview of its responses.

@@ -102,9 +102,9 @@ def documentation():
     return send_from_directory(BASE_DIR, "documentation.html")
 
 
-@app.route("/Surveys.html")
-def Surveys():
-    return send_from_directory(BASE_DIR, "Surveys.html")
+@app.route("/Upload.html")
+def Upload():
+    return send_from_directory(BASE_DIR, "Upload.html")
 
 
 # Serves the CSS file. The HTML references /style/style.css so Flask needs to handle it.

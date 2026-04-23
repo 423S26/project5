@@ -130,7 +130,7 @@ function update_question(data, q) {
   //   document.getElementById("question-detail").style.display = "none";
   //   return;
   // }
-  
+
   current_question = q;
   const question = questionsData[current_question];
   expanded = false;
@@ -139,8 +139,6 @@ function update_question(data, q) {
   document.getElementById("question-heading").textContent = q;
 
   listResponses(5, q);
-  
-  
 
   // Pre-select the detected/saved type and clear old status.
   document.getElementById("typeSelect").value = question.type || "";
@@ -159,7 +157,6 @@ function update_question(data, q) {
     block: "start",
   });
   generateGraph();
-
 }
 // ------------QUESTION SEARCH---------------------------------------------------------
 document
@@ -169,7 +166,9 @@ document
   });
 // -------SELECT BY QUESTION TYPE--------------------------------------------
 
-document.getElementById("sort_by_category").addEventListener("change", function () {
+document
+  .getElementById("sort_by_category")
+  .addEventListener("change", function () {
     filter();
   });
 
@@ -206,13 +205,13 @@ function filter() {
 // ----- EXPAND RESPONSES----------------------------------------------------
 
 const read_more_button = document.getElementById("read_more");
-read_more_button.addEventListener('click', function(){
-  if (expanded){
-    listResponses(5)
+read_more_button.addEventListener("click", function () {
+  if (expanded) {
+    listResponses(5);
     expanded = false;
     read_more_button.textContent = "read more";
-  }else{
-    listResponses(-1)
+  } else {
+    listResponses(-1);
     expanded = true;
     read_more_button.textContent = "read less";
   }
@@ -222,15 +221,14 @@ function listResponses(num) {
   // Show up to 5 non-empty responses as a preview.
   const previewList = document.getElementById("response-preview");
   previewList.innerHTML = "";
-  
+
   var responses = questionsData[current_question].options.filter(
     (r) => r.trim() !== "",
   );
-  
-  if (num != -1){
+
+  if (num !== -1) {
     responses = responses.slice(0, num);
   }
-  
 
   if (responses.length === 0) {
     const li = document.createElement("li");
@@ -241,13 +239,11 @@ function listResponses(num) {
       const li = document.createElement("li");
       li.textContent = response;
       previewList.appendChild(li);
-      });
-    
+    });
+
     generateGraph();
   }
 }
-
-
 
 // ---- GENERATE GRAPH--------------------------------------------------------
 

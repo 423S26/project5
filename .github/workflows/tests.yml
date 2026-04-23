@@ -30,4 +30,4 @@ jobs:
 
       # Step 4: Run pytest from the scripts directory where test_main.py lives.
       - name: Run tests
-        run: pytest esofGroup5/scripts/test_main.py -v
+        run: pytest backend/test_main.py -v

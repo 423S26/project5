@@ -26,10 +26,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run flake8
-        run: flake8 esofGroup5/scripts/main.py --config=.flake8
+        run: flake8 backend/main.py --config=.flake8
 
       - name: Check black formatting
-        run: black --check esofGroup5/scripts/main.py
+        run: black --check backend/main.py
 
   lint-html:
     name: HTML (htmlhint + prettier)
@@ -46,10 +46,10 @@ jobs:
         run: npm install -g htmlhint prettier
 
       - name: Run htmlhint
-        run: htmlhint "esofGroup5/**/*.html" --config .htmlhintrc
+        run: htmlhint "frontend/**/*.html" --config .htmlhintrc
 
       - name: Check prettier formatting
-        run: prettier --check "esofGroup5/**/*.html"
+        run: prettier --check "frontend/**/*.html"
 
   lint-js:
     name: JavaScript (eslint + prettier)
@@ -68,7 +68,7 @@ jobs:
       - name: Run eslint
         run: |
           if find esofGroup5/js -name "*.js" | grep -q .; then
-            eslint "esofGroup5/js/**/*.js"
+            eslint "frontend/js/**/*.js"
           else
             echo "No JS files found, skipping."
           fi
@@ -76,7 +76,7 @@ jobs:
       - name: Check prettier formatting
         run: |
           if find esofGroup5/js -name "*.js" | grep -q .; then
-            prettier --check "esofGroup5/js/**/*.js"
+            prettier --check "frontend/js/**/*.js"
           else
             echo "No JS files found, skipping."
           fi

@@ -5,9 +5,10 @@ import os
 
 app = Flask(__name__)
 
-# Base directory is esofGroup5/ - one level up from this script.
-# Used to locate and serve the frontend HTML and CSS files.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Base directory points to frontend/ where HTML/CSS/JS files live.
+BASE_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend"
+)
 
 # In-memory store for parsed questions. Populated on /upload, read by /questions.
 questions = {}

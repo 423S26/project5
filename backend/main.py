@@ -14,6 +14,9 @@ BASE_DIR = os.path.join(
 questions = {}
 
 
+
+
+
 def auto_detect_type(question_text, responses):
     """
     Attempts to infer the question type from its text and response values.

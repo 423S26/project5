@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/style/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ESC Dashboard</h1>
+      <ul class="navigation">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/Upload.html" class="highlighted">Upload</a></li>
+        <li><a href="/Analytics.html">Analytics</a></li>
+        <li><a href="/documentation.html">Documentation</a></li>
+      </ul>
+    </header>
+    <h2>Upload</h2>
+    <div class="display_box">
+      <!-- File upload form.
+             enctype="multipart/form-data" is required for file uploads.
+             No action/method attributes - submission is handled by JS below
+             so the page doesn't navigate away. -->
+      <form id="uploadForm" enctype="multipart/form-data" class="csv_form">
+        <label for="fileToUpload">Select file to upload:</label>
+        <br />
+        <!-- accept=".csv" restricts the file picker to CSV files only -->
+        <input type="file" name="file" id="fileToUpload" accept=".csv" />
+        <br />
+        <input type="submit" value="Upload File" name="submit" />
+      </form>
+
+      <!-- Shows upload progress and error messages to the user -->
+      <div id="status"></div>
+    </div>
+
+    <div class="display_box">
+      <strong>Just exploring?</strong>
+      <p>
+        Try the app with our example coffee shop survey data - no file needed.
+      </p>
+      <button id="testFileBtn">Use Example File</button>
+    </div>
+
+    <script src="/js/upload.js"></script>
+    <script>
+      document
+        .getElementById("testFileBtn")
+        .addEventListener("click", function () {
+          this.disabled = true;
+          fetch("/use-test-file", { method: "POST" })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.error) {
+                document.getElementById("status").textContent =
+                  "Error: " + data.error;
+              } else {
+                document.getElementById("status").textContent =
+                  data.message + " - head to Analytics!";
+              }
+              this.disabled = false;
+            })
+            .catch(() => {
+              document.getElementById("status").textContent =
+                "Could not reach the server. If running locally, start Flask first: cd esofGroup5/scripts && python main.py, then visit http://localhost:5001";
+              this.disabled = false;
+            });
+        });
+    </script>
+  </body>
+</html>

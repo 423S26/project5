@@ -1,0 +1,160 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/style/style.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>ESC Dashboard</h1>
+      <ul class="navigation">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Upload.html">Upload</a></li>
+        <li><a href="Analytics.html">Analytics</a></li>
+        <li>
+          <a href="documentation.html" class="highlighted">Documentation</a>
+        </li>
+      </ul>
+    </header>
+
+    <!-- User Documentation -->
+    <h2>User Documentation</h2>
+    <div class="display_box">
+      <p><strong>Analytics Dashboard for the Empower Student Center</strong></p>
+      <p>
+        A web application that transforms Qualtrics survey CSV exports into
+        interactive visualizations and statistics - reducing hours of manual
+        Excel work to minutes.
+      </p>
+    </div>
+
+    <h2>How To Use</h2>
+    <div class="display_box">
+      <h3>Step 1: Export from Qualtrics</h3>
+      <ol>
+        <li>Log into Qualtrics</li>
+        <li>Open your survey and go to the Data &amp; Analysis tab</li>
+        <li>Click Export &amp; Import, then Export Data</li>
+        <li>Select CSV format and download the file</li>
+      </ol>
+
+      <h3>Step 2: Upload your CSV</h3>
+      <p>
+        On the <strong>Upload</strong> page, click <strong>Choose File</strong>,
+        select your exported CSV, then click <strong>Upload File</strong>. If
+        you just want to explore the app, click
+        <strong>Use Example File</strong> to load the built-in coffee shop
+        survey instead.
+      </p>
+
+      <h3>Step 3: Analyze questions</h3>
+      <p>
+        Go to the <strong>Analytics</strong> page. All survey questions will
+        appear as clickable cards. Use the search bar or type filter to narrow
+        them down.
+      </p>
+
+      <h3>Step 4: View statistics and charts</h3>
+      <p>
+        Click any question card to see a response preview and auto-detected
+        question type. If the type is wrong, use the
+        <strong>Question Type</strong> dropdown to correct it and click
+        <strong>Save Type</strong>. The statistics and chart will update
+        automatically. Click <strong>Download Graph</strong> to save the chart
+        as a PNG.
+      </p>
+    </div>
+
+
+
+    <!-- Developer Documentation -->
+    <h2>Developer Documentation</h2>
+    <div class="display_box">
+      <h3>Running Locally</h3>
+      <h4>Requirements</h4>
+      <ul>
+        <li>Python 3.9+</li>
+        <li>A modern web browser (Chrome, Firefox, Safari, Edge)</li>
+      </ul>
+
+      <h4>1. Set up the virtual environment</h4>
+      <pre><code>python -m venv .venv
+source .venv/bin/activate    # macOS/Linux
+# .venv\Scripts\activate     # Windows
+pip install -r requirements.txt</code></pre>
+
+      <h4>2. Start the Flask backend</h4>
+      <pre><code>python backend/main.py</code></pre>
+      <p>
+        The server will start on
+        <strong><a href="http://localhost:5001">http://localhost:5001</a></strong>.
+      </p>
+      <p>
+        <strong>macOS note:</strong> Port 5000 is reserved by AirPlay Receiver,
+        so we use 5001. If you see a 403 error, make sure you're hitting port
+        5001, not 5000.
+      </p>
+
+      <h4>3. Open the app</h4>
+      <p>
+        Navigate to <strong>http://localhost:5001</strong> in your browser. Do
+        not open the HTML files directly - they need to be served through Flask
+        for uploads to work.
+      </p>
+    </div>
+
+    <div class="display_box">
+      <h3>Running Tests</h3>
+      <pre><code>pytest backend/test_main.py -v</code></pre>
+      <p>36 tests covering upload parsing, auto-detection, and all API endpoints.</p>
+    </div>
+
+    <div class="display_box">
+      <h3>Tech Stack</h3>
+      <ul>
+        <li><strong>Frontend</strong> - HTML, CSS, JavaScript</li>
+        <li><strong>Charts</strong> - Chart.js</li>
+        <li><strong>Backend</strong> - Python 3.9+, Flask</li>
+        <li><strong>Deployment</strong> - Render (free tier)</li>
+        <li><strong>CI</strong> - GitHub Actions (lint + tests on every push)</li>
+      </ul>
+    </div>
+
+    <div class="display_box">
+      <h3>Project Structure</h3>
+      <pre><code>project5/
+  frontend/    HTML, CSS, and JavaScript
+  backend/     Flask app, tests, and example CSV
+  .github/     CI workflows
+  index.html   GitHub Pages landing page</code></pre>
+    </div>
+
+
+
+    <h2>Contact &amp; Support</h2>
+    <div class="display_box">
+      <h3>Project Team</h3>
+      <ul>
+        <li>
+          <strong>Ari</strong> - Computer Science / Data Science -
+          Osmunaj@gmail.com
+        </li>
+        <li>
+          <strong>Chrys</strong> - Computer Science / Psychology -
+          howlhund@gmail.com
+        </li>
+      </ul>
+
+      <h3>Client</h3>
+      <ul>
+        <li><strong>Susan Kelly</strong> - Empower Student Center</li>
+        <li><strong>Organization:</strong> Montana State University</li>
+      </ul>
+
+      <h3>Report an Issue</h3>
+      <p><strong>For End Users:</strong></p>
+      <p>Email the team with a description of what you tried to do, what happened, any error messages, and screenshots if possible.</p>
+      <p><strong>For Developers:</strong></p>
+      <p>Open an issue on GitHub.</p>
+    </div>
+  </body>
+</html>

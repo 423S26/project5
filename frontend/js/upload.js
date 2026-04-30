@@ -13,7 +13,7 @@ document.getElementById("uploadForm").addEventListener("submit", function (e) {
   }
 
   // FormData is the browser's built-in way to package a file
-  // for a multipart POST — Flask's request.files reads this on the other end.
+  // for a multipart POST - Flask's request.files reads this on the other end.
   const formData = new FormData();
   formData.append("file", fileInput.files[0]);
 
@@ -33,6 +33,6 @@ document.getElementById("uploadForm").addEventListener("submit", function (e) {
     })
     .catch(() => {
       document.getElementById("status").textContent =
-        "Failed to connect to server. Is the Flask app running?";
+        "Could not reach the server. If running locally, start Flask first: cd esofGroup5/scripts && python main.py, then visit http://localhost:5001";
     });
 });

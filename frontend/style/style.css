@@ -1,13 +1,45 @@
+:root {
+    --brand-blue: #09579a;
+    --brand-blue-light: #5a9fd4;
+    --page-gutter: 60px;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, a, li, input, select, button, label, span, td, th {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: var(--brand-blue);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px 0 var(--page-gutter);
+}
+
 h1{
-    background-color: rebeccapurple;
     color: aliceblue;
     padding: 20px;
     margin: 0px;
 }
 
-h2, h3, h4, p{
+h2{
+    background-color: var(--brand-blue-light);
+    color: white;
     padding: 20px;
-    margin: 10px;
+    margin: 10px 10px 10px var(--page-gutter);
+}
+
+h3, h4, p{
+    padding: 20px;
+    margin: 10px 10px 10px var(--page-gutter);
+}
+
+ol, ul, blockquote, code {
+    margin-left: var(--page-gutter);
+}
+
+.display_box h3, .display_box h4, .display_box p, .display_box ol, .display_box ul, .display_box blockquote, .display_box code {
+    margin-left: 0;
 }
 
 body{
@@ -28,9 +60,8 @@ input{
 .display_box{
     background-color: rgb(202, 202, 202);
     padding: 30px;
-    border-radius: 15px;
-    margin: 60px;
-
+    border-radius: 6px;
+    margin: 20px var(--page-gutter);
 }
 
 .read_more{
@@ -44,24 +75,22 @@ input{
 
 .navigation li a{
     text-decoration: none;
-    padding: 20px;
-    color: rebeccapurple;
-    
+    padding: 10px;
+    color: aliceblue;
 }
 
 .navigation{
-    margin: 30px;
-
+    margin: 0;
+    padding-left: 0;
     display: block;
 }
 
 .navigation li{
     display: inline;
     padding: 0px;
-    margin: 20px;
+    margin: 10px;
     font-size: 15px;
     font-weight: 500;
-
 }
 
 .download_button{
@@ -73,23 +102,22 @@ input{
 }
 
 .navigation li :hover {
-    background-color: rebeccapurple;
+    background-color: var(--brand-blue);
     color: aliceblue;
     border-radius: 15px;
-
 }
 
 /* Container of Boxes */
 .question_boxes{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-
+    margin: 0 var(--page-gutter);
 }
 
 /* Single Box */
 .question_box{
     background-color: rgb(173, 173, 173);
-    
+
     width: 200px;
     padding: 15px;
     margin: 20px;
@@ -104,28 +132,20 @@ input{
 }
 
 .highlighted {
-    background-color: rebeccapurple;
+    background-color: var(--brand-blue);
     color: aliceblue !important;
     border-radius: 15px;
 }
 
 .text_input{
-    margin: 20px;
+    margin: 20px var(--page-gutter);
     border-radius: 20px;
-}
-
-
-
-
-.navigation{
-    padding-left: 0px;
 }
 
 
 .link_button{
     padding: 20px;
-    margin: auto;
-    margin-top: 40px;
+    margin: 40px auto auto var(--page-gutter);
     display: block;
     text-decoration: none;
     background-color: rgb(104, 116, 168);

@@ -5,9 +5,10 @@ import os
 
 app = Flask(__name__)
 
-# Base directory is esofGroup5/ — one level up from this script.
-# Used to locate and serve the frontend HTML and CSS files.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Base directory points to frontend/ where HTML/CSS/JS files live.
+BASE_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend"
+)
 
 # In-memory store for parsed questions. Populated on /upload, read by /questions.
 questions = {}
@@ -102,9 +103,43 @@ def documentation():
     return send_from_directory(BASE_DIR, "documentation.html")
 
 
-@app.route("/Surveys.html")
-def Surveys():
-    return send_from_directory(BASE_DIR, "Surveys.html")
+@app.route("/Upload.html")
+def Upload():
+    return send_from_directory(BASE_DIR, "Upload.html")
+
+
+@app.route("/use-test-file", methods=["POST"])
+def use_test_file():
+    global questions
+    test_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "coffee_test.csv"
+    )
+    if not os.path.exists(test_path):
+        return jsonify({"error": "Test file not found on server"}), 404
+
+    with open(test_path, newline="", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        headers = next(reader)
+        data = {header: [] for header in headers}
+        for row in reader:
+            for i, value in enumerate(row):
+                if i < len(headers):
+                    data[headers[i]].append(value)
+
+    renamed = {}
+    for key, values in data.items():
+        if not values:
+            continue
+        question_text = values[0]
+        if question_text:
+            response_values = values[1:]
+            renamed[question_text] = {
+                "options": response_values,
+                "type": auto_detect_type(question_text, response_values),
+            }
+
+    questions = renamed
+    return jsonify({"message": "Test file loaded", "questions": list(questions.keys())})
 
 
 # Serves the CSS file. The HTML references /style/style.css so Flask needs to handle it.
@@ -121,9 +156,9 @@ def js_scripts(filename):
 
 # Accepts a CSV file upload and parses it into questions.
 # The Qualtrics export format has:
-#   Row 1 - internal column IDs (e.g. "QID2") — used as dict keys during parsing
-#   Row 2 - human-readable question text — becomes the final key
-#   Rows 3+ - individual survey responses — stored as "options"
+#   Row 1 - internal column IDs (e.g. "QID2") - used as dict keys during parsing
+#   Row 2 - human-readable question text - becomes the final key
+#   Rows 3+ - individual survey responses - stored as "options"
 
 
 @app.route("/upload", methods=["OPTIONS", "POST"])
@@ -146,7 +181,7 @@ def upload():
     content = file.stream.read().decode("utf-8")
     reader = csv.reader(io.StringIO(content))
 
-    # Row 1: internal Qualtrics column names — used as temporary keys.
+    # Row 1: internal Qualtrics column names - used as temporary keys.
     headers = next(reader)
     data = {header: [] for header in headers}
 
@@ -199,7 +234,7 @@ def set_type():
 
 
 if __name__ == "__main__":
-    # Render injects a PORT environment variable — use it if present, fall back to 5001 locally.
+    # Render injects a PORT environment variable - use it if present, fall back to 5001 locally.
     # host='0.0.0.0' is required so Render can route external traffic to the server.
     port = int(os.environ.get("PORT", 5001))
     app.run(host="0.0.0.0", debug=False, port=port)

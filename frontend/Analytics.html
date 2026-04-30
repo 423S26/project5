@@ -3,16 +3,17 @@
     <link rel="stylesheet" href="/style/style.css" />
   </head>
   <body>
-    <h1>ESC Dashboard</h1>
-    <ul class="navigation">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="Surveys.html">Surveys</a></li>
-      <li><a href="Analytics.html" class="highlighted">Analytics</a></li>
-      <li><a href="documentation.html">Documentation</a></li>
-    </ul>
+    <header>
+      <h1>ESC Dashboard</h1>
+      <ul class="navigation">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Upload.html">Upload</a></li>
+        <li><a href="Analytics.html" class="highlighted">Analytics</a></li>
+        <li><a href="documentation.html">Documentation</a></li>
+      </ul>
+    </header>
     <h2>Analytics</h2>
-    <h3>Questions</h3>
-    <div>
+    <div style="margin-left: var(--page-gutter)">
       <input
         type="text"
         id="question_search"
@@ -51,8 +52,7 @@
         <ul id="response-preview" class="response_preview"></ul>
 
         <span id="read_more" class="read_more">read more</span>
-        <hr>
-
+        <hr />
 
         <!-- The user picks what kind of question this is -->
         <label for="typeSelect"><strong>Question Type</strong></label>
@@ -66,14 +66,12 @@
         </select>
         <button id="saveTypeBtn">Save Type</button>
 
-
         <!-- Inline confirmation message after saving -->
         <span id="saveStatus"></span>
 
-        
-        <!-- Stats section — shown as soon as a type is selected -->
+        <!-- Stats section - shown as soon as a type is selected -->
         <div id="stats-section" style="display: none">
-          <hr>
+          <hr />
           <strong>Statistics:</strong>
           <div id="stats-output"></div>
           <canvas
